@@ -1,9 +1,9 @@
 "use client";
 
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { Plus, X } from "lucide-react";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
     <div
       className={cn(
         "fixed top-0 left-0 h-full w-80 bg-background border-r z-20 transform transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        isOpen ? "translate-x-0" : "-translate-x-full",
       )}
     >
       <div className="flex flex-col h-full">
@@ -33,12 +33,16 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
             </TabsList>
             <TabsContent value="my-projects">
               <div className="flex items-center justify-center h-48 border-2 border-dashed rounded-md">
-                <p className="text-sm text-muted-foreground">No projects yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  No projects yet.
+                </p>
               </div>
             </TabsContent>
             <TabsContent value="shared">
               <div className="flex items-center justify-center h-48 border-2 border-dashed rounded-md">
-                <p className="text-sm text-muted-foreground">No shared projects yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  No shared projects yet.
+                </p>
               </div>
             </TabsContent>
           </Tabs>
