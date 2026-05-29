@@ -5,7 +5,7 @@ Update this file after every meaningful implementation change.
 ## Current Goal
 - [what you are building right now]
 ## Completed
-- None yet.
+- Adding the design system and UI primitive components.
 ## In Progress
 - None yet.
 ## Next Up
