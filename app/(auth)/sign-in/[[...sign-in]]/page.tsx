@@ -1,5 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
-import { Ghost } from "lucide-react";
+// import { Ghost } from "lucide-react";
 
 export default function Page() {
   return (
