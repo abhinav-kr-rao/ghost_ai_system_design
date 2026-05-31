@@ -1,5 +1,6 @@
 "use client";
 
+import { UserButton } from "@clerk/nextjs";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -18,15 +19,10 @@ export function EditorNavbar({ isOpen, setIsOpen }: EditorNavbarProps) {
             size="icon"
             onClick={() => setIsOpen(!isOpen)}
           >
-            {isOpen ? (
-              <PanelLeftClose className="h-5 w-5" />
-            ) : (
-              <PanelLeftOpen className="h-5 w-5" />
-            )}
+            {isOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
           </Button>
         </div>
-        <div className="flex-1" />
-        <div className="flex items-center" />
+        <UserButton />
       </div>
     </header>
   );

@@ -1,16 +1,17 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Editor Chrome
+- Authentication
 ## Current Goal
-- Build the editor navbar and project sidebar shell.
+- Implement Clerk authentication.
 ## Completed
 - Adding the design system and UI primitive components.
 - Created `components/editor/editor-navbar.tsx`
 - Created `components/editor/project-sidebar.tsx`
 - Verified dialog pattern is ready for future use.
+- Built the editor navbar and project sidebar shell.
 ## In Progress
-- None yet.
+- Implementing Clerk authentication.
 ## Next Up
 - [Specify next feature from backlog]
 ## Open Questions
