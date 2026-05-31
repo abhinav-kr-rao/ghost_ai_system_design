@@ -47,7 +47,7 @@ Use existing Clerk env vars. Do not rename or invent new ones.
 ## Check when done
 
 - `proxy.ts` exists at the root
-- all routes are protected excepts public auth routes
+- all routes are protected except public auth routes
 - auth pages use CSS variables with no hardcoded colors
 - `ClerkProvider` wraps the root layout
 - `npm run build` passes

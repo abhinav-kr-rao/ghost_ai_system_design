@@ -25,23 +25,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      appearance={{
-        theme: dark,
-        variables: {
-          colorPrimary: "hsl(var(--primary))",
-          colorPrimaryForeground: "hsl(var(--primary-foreground))",
-          // colorBackground: "hsl(var(--background))",
-          colorInput: "hsl(var(--input))",
-          colorInputForeground: "hsl(var(--primary-foreground))",
-        },
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>
+ <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ClerkProvider
+          appearance={{
+            theme: dark,
+            variables: {
+              colorPrimary: "hsl(var(--primary))",
+              colorPrimaryForeground: "hsl(var(--primary-foreground))",
+              // colorBackground: "hsl(var(--background))",
+              colorInput: "hsl(var(--input))",
+              colorInputForeground: "hsl(var(--primary-foreground))",
+            },
+          }}
+        >
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
