@@ -14,7 +14,9 @@ export default function AuthLayout({
             <div className="h-8 w-8 bg-primary rounded-md"></div>
             <span className="font-bold text-xl">Ghost AI</span>
           </div>
-          <h1 className="text-3xl font-bold mb-4">Build faster with context.</h1>
+          <h1 className="text-3xl font-bold mb-4">
+            Build faster with context.
+          </h1>
           <p className="text-muted-foreground mb-12">
             Your AI-powered workspace out of the box.
           </p>
@@ -26,28 +28,26 @@ export default function AuthLayout({
             <li className="flex items-center gap-2">
               ✓ Autonomous task execution
             </li>
-            <li className="flex items-center gap-2">
-              ✓ Seamless integration
-            </li>
+            <li className="flex items-center gap-2">✓ Seamless integration</li>
           </ul>
         </div>
         <div className="hidden flex-col items-center justify-center border-r bg-muted p-10 md:flex">
-        <div className="w-full max-w-md">
-          <div className="flex flex-col items-center text-center">
-            <Ghost className="h-16 w-16" />
-            <h1 className="mt-4 text-3xl font-bold">Ghost AI</h1>
-            <p className="mt-2 text-muted-foreground">
-              The intelligent coding companion.
-            </p>
-            <ul className="mt-8 space-y-2 text-left text-muted-foreground">
-              <li>- AI-powered code generation</li>
-              <li>- Seamless project scaffolding</li>
-              <li>- Real-time collaboration</li>
-              <li>- Intelligent debugging</li>
-            </ul>
+          <div className="w-full max-w-md">
+            <div className="flex flex-col items-center text-center">
+              <Ghost className="h-16 w-16" />
+              <h1 className="mt-4 text-3xl font-bold">Ghost AI</h1>
+              <p className="mt-2 text-muted-foreground">
+                The intelligent coding companion.
+              </p>
+              <ul className="mt-8 space-y-2 text-left text-muted-foreground">
+                <li>- AI-powered code generation</li>
+                <li>- Seamless project scaffolding</li>
+                <li>- Real-time collaboration</li>
+                <li>- Intelligent debugging</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
         <div className="text-xs text-muted-foreground">
           © {new Date().getFullYear()} Ghost AI. All rights reserved.
         </div>
