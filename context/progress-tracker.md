@@ -1,17 +1,18 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Authentication
+- Project Dialogs
 ## Current Goal
-- Implement Clerk authentication.
+- Implement project dialogs and editor home as specified in 04-project-dialogs.md.
 ## Completed
 - Adding the design system and UI primitive components.
 - Created `components/editor/editor-navbar.tsx`
 - Created `components/editor/project-sidebar.tsx`
 - Verified dialog pattern is ready for future use.
 - Built the editor navbar and project sidebar shell.
-## In Progress
 - Implementing Clerk authentication.
+## In Progress
+- Implementing 04-project-dialogs.md
 ## Next Up
 - [Specify next feature from backlog]
 ## Open Questions
