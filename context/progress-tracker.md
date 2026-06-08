@@ -11,8 +11,9 @@ Update this file after every meaningful implementation change.
 - Verified dialog pattern is ready for future use.
 - Built the editor navbar and project sidebar shell.
 - Implementing Clerk authentication.
+- Implemented project dialogs and editor home (04-project-dialogs.md).
 ## In Progress
-- Implementing 04-project-dialogs.md
+- [None]
 ## Next Up
 - [Specify next feature from backlog]
 ## Open Questions
