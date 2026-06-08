@@ -190,7 +190,9 @@ Once the schema has models and the user is ready, create a migration and generat
 npx prisma migrate dev --name init
 ```
 
-This creates migration files in `prisma/migrations/` **and** generates the client in one step. Migration history is essential for CI/CD workflows (`prisma migrate deploy`) and production deployments.
+This creates migration files in `prisma/migrations/`. In Prisma v7, run `npx prisma 
+generate` explicitly after migrations to generate/update the client. Migration history is
+essential for CI/CD workflows (`prisma migrate deploy`) and production deployments.
 
 Only use `npx prisma db push` if the user explicitly asks for prototyping-only mode (no migration history). In that case, follow it with `npx prisma generate`.
 
