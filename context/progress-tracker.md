@@ -1,9 +1,9 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Project Dialogs
+- Prisma & Database Models
 ## Current Goal
-- Implement project dialogs and editor home as specified in 04-project-dialogs.md.
+- Implement Prisma models, singletons, and migrations as specified in 05-prisma.md.
 ## Completed
 - Adding the design system and UI primitive components.
 - Created `components/editor/editor-navbar.tsx`
@@ -12,13 +12,15 @@ Update this file after every meaningful implementation change.
 - Built the editor navbar and project sidebar shell.
 - Implementing Clerk authentication.
 - Implemented project dialogs and editor home (04-project-dialogs.md).
+- Implemented Prisma models (Project, ProjectCollaborator) and configuration (05-prisma.md).
 ## In Progress
 - [None]
 ## Next Up
-- [Specify next feature from backlog]
+- Run Prisma migration and generate client.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions
-- [decisions made that affect the system design]
+- Configured multi-file schema for Prisma with Project and ProjectCollaborator models.
+- Configured dynamic DB driver adapter (native vs pg connector) depending on `DATABASE_URL`.
 ## Session Notes
-- [context needed to resume in the next session]
+- Next up is to run migrations and test that the ORM is well connected.
