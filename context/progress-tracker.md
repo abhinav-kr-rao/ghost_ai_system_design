@@ -1,9 +1,9 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Project APIs
+- Editor home wiring
 ## Current Goal
-- Implement API routes for CRUD operations on Projects.
+- Wire the editor home sidebar and dialogs to the real project data and mutation API.
 ## Completed
 - Adding the design system and UI primitive components.
 - Created `components/editor/editor-navbar.tsx`
@@ -14,14 +14,16 @@ Update this file after every meaningful implementation change.
 - Implemented project dialogs and editor home (04-project-dialogs.md).
 - Implemented Prisma models (Project, ProjectCollaborator) and configuration (05-prisma.md).
 - Implemented backend project API routes (06-project-apis.md).
+- Wired the editor home to real owned/shared project data and mutation flow (07-wire-editor-home.md).
 ## In Progress
 - [None]
 ## Next Up
-- Wire the UI with the project APIs.
+- [None]
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions
 - Configured multi-file schema for Prisma with Project and ProjectCollaborator models.
 - Configured dynamic DB driver adapter (native vs pg connector) depending on `DATABASE_URL`.
+- Editor create uses the generated room ID as the persisted project ID so project and Liveblocks room identifiers stay aligned.
 ## Session Notes
-- Next up is to run migrations and test that the ORM is well connected.
+- Verified with `npm run build` after the editor home wiring changes.

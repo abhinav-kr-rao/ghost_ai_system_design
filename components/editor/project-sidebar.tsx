@@ -5,28 +5,29 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import type { Project } from "@/hooks/use-project-dialogs";
+import type { EditorProjectSummary } from "@/lib/projects";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  projects?: Project[];
+  ownedProjects?: EditorProjectSummary[];
+  sharedProjects?: EditorProjectSummary[];
   onOpenCreate?: () => void;
-  onOpenRename?: (project: Project) => void;
-  onOpenDelete?: (project: Project) => void;
+  onOpenRename?: (project: EditorProjectSummary) => void;
+  onOpenDelete?: (project: EditorProjectSummary) => void;
+  onOpenProject?: (project: EditorProjectSummary) => void;
 }
 
 export function ProjectSidebar({
   isOpen,
   onClose,
-  projects = [],
+  ownedProjects = [],
+  sharedProjects = [],
   onOpenCreate,
   onOpenRename,
   onOpenDelete,
+  onOpenProject,
 }: ProjectSidebarProps) {
-  const myProjects = projects.filter((p) => !p.isShared);
-  const sharedProjects = projects.filter((p) => p.isShared);
-
   return (
     <>
       {/* Backdrop scrim overlay for mobile */}
@@ -59,7 +60,7 @@ export function ProjectSidebar({
                 value="my-projects"
                 className="flex-1 overflow-hidden mt-4"
               >
-                {myProjects.length === 0 ? (
+                {ownedProjects.length === 0 ? (
                   <div className="flex items-center justify-center h-48 border-2 border-dashed rounded-md">
                     <p className="text-sm text-muted-foreground">
                       No projects yet.
@@ -68,14 +69,18 @@ export function ProjectSidebar({
                 ) : (
                   <ScrollArea className="h-full pr-4 -mr-4">
                     <div className="space-y-1">
-                      {myProjects.map((project) => (
+                      {ownedProjects.map((project) => (
                         <div
                           key={project.id}
                           className="group flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted"
                         >
-                          <span className="text-sm font-medium">
+                          <button
+                            type="button"
+                            className="text-left text-sm font-medium"
+                            onClick={() => onOpenProject?.(project)}
+                          >
                             {project.name}
-                          </span>
+                          </button>
                           <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
                             <Button
                               variant="ghost"
@@ -120,10 +125,13 @@ export function ProjectSidebar({
                           key={project.id}
                           className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted"
                         >
-                          <span className="text-sm font-medium">
+                          <button
+                            type="button"
+                            className="text-left text-sm font-medium"
+                            onClick={() => onOpenProject?.(project)}
+                          >
                             {project.name}
-                          </span>
-                          {/* No actions for shared projects per spec */}
+                          </button>
                         </div>
                       ))}
                     </div>

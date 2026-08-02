@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
+import { z } from "zod";
+
+const updateProjectSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+});
 
 export async function PATCH(
   req: NextRequest,
@@ -30,10 +35,11 @@ export async function PATCH(
       return new NextResponse("Forbidden", { status: 403 });
     }
 
-    const body = await req.json().catch(() => ({}));
+    const body = updateProjectSchema.safeParse(
+      await req.json().catch(() => ({})),
+    );
 
-    // Only allow renaming based on requirements
-    if (typeof body.name !== "string" || !body.name.trim()) {
+    if (!body.success) {
       return new NextResponse("Invalid name", { status: 400 });
     }
 
@@ -42,7 +48,7 @@ export async function PATCH(
         id: projectId,
       },
       data: {
-        name: body.name.trim(),
+        name: body.data.name,
       },
     });
 
