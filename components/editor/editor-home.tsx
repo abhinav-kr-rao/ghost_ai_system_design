@@ -46,6 +46,7 @@ export function EditorHome({ projects }: EditorHomeProps) {
         setProjectName={actions.setProjectName}
         onClose={actions.closeDialog}
         onSubmit={actions.submitDialog}
+        error={actions.error}
       />
       <main className="pt-16 transition-all duration-300">
         <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center p-4 text-center">

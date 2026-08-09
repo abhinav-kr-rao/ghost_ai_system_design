@@ -46,9 +46,15 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const body = createProjectSchema.parse(
+    const parsed = createProjectSchema.safeParse(
       await req.json().catch(() => ({})),
     );
+
+    if (!parsed.success) {
+      return new NextResponse("Invalid body", { status: 400 });
+    }
+
+    const body = parsed.data;
 
     const project = await prisma.project.create({
       data: {

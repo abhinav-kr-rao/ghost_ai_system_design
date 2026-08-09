@@ -36,7 +36,10 @@ export async function getEditorHomeProjects(
             },
             collaborators: {
               some: {
-                email: userEmail,
+                email: {
+                  equals: userEmail,
+                  mode: "insensitive",
+                },
               },
             },
           },

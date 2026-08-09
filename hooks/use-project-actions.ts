@@ -10,6 +10,7 @@ interface UseProjectActionsResult {
   activeDialog: DialogType;
   activeProject: EditorProjectSummary | null;
   isLoading: boolean;
+  error: string | null;
   projectName: string;
   roomIdPreview: string;
   openCreateDialog: () => void;
@@ -40,6 +41,7 @@ export function useProjectActions(): UseProjectActionsResult {
   const [projectName, setProjectName] = useState("");
   const [roomSuffix, setRoomSuffix] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const activeProjectId = searchParams.get("projectId");
 
@@ -79,6 +81,7 @@ export function useProjectActions(): UseProjectActionsResult {
     setProjectName("");
     setRoomSuffix("");
     setIsLoading(false);
+    setError(null);
   };
 
   const submitDialog = async () => {
@@ -93,6 +96,7 @@ export function useProjectActions(): UseProjectActionsResult {
         return;
       }
 
+      setError(null);
       setIsLoading(true);
 
       try {
@@ -118,6 +122,7 @@ export function useProjectActions(): UseProjectActionsResult {
         return;
       } catch (error) {
         console.error("[PROJECT_CREATE]", error);
+        setError("Failed to create project. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -132,6 +137,7 @@ export function useProjectActions(): UseProjectActionsResult {
         return;
       }
 
+      setError(null);
       setIsLoading(true);
 
       try {
@@ -154,6 +160,7 @@ export function useProjectActions(): UseProjectActionsResult {
         return;
       } catch (error) {
         console.error("[PROJECT_RENAME]", error);
+        setError("Failed to rename project. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -162,6 +169,7 @@ export function useProjectActions(): UseProjectActionsResult {
     }
 
     if (activeDialog === "delete" && activeProject) {
+      setError(null);
       setIsLoading(true);
 
       try {
@@ -185,6 +193,7 @@ export function useProjectActions(): UseProjectActionsResult {
         return;
       } catch (error) {
         console.error("[PROJECT_DELETE]", error);
+        setError("Failed to delete project. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -195,6 +204,7 @@ export function useProjectActions(): UseProjectActionsResult {
     activeDialog,
     activeProject,
     isLoading,
+    error,
     projectName,
     roomIdPreview,
     openCreateDialog,

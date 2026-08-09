@@ -18,6 +18,28 @@ interface ProjectSidebarProps {
   onOpenProject?: (project: EditorProjectSummary) => void;
 }
 
+type ShowNameButton = {
+
+  onOpenProject?: (project: EditorProjectSummary) => void;
+  project: EditorProjectSummary
+}
+
+
+
+const ShowNameButton = ({ onOpenProject, project }: ShowNameButton) => {
+
+  return <button
+    type="button"
+    className="text-left text-sm font-medium"
+    onClick={() => onOpenProject?.(project)}
+  >
+    {project.name}
+
+
+  </button>
+
+}
+
 export function ProjectSidebar({
   isOpen,
   onClose,
@@ -69,18 +91,17 @@ export function ProjectSidebar({
                 ) : (
                   <ScrollArea className="h-full pr-4 -mr-4">
                     <div className="space-y-1">
+
+
                       {ownedProjects.map((project) => (
                         <div
                           key={project.id}
                           className="group flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted"
                         >
-                          <button
-                            type="button"
-                            className="text-left text-sm font-medium"
-                            onClick={() => onOpenProject?.(project)}
-                          >
-                            {project.name}
-                          </button>
+                          <ShowNameButton onOpenProject={onOpenProject} project={project}>
+
+                          </ShowNameButton>
+
                           <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
                             <Button
                               variant="ghost"
@@ -120,18 +141,20 @@ export function ProjectSidebar({
                 ) : (
                   <ScrollArea className="h-full pr-4 -mr-4">
                     <div className="space-y-1">
+
+
                       {sharedProjects.map((project) => (
                         <div
                           key={project.id}
                           className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted"
                         >
-                          <button
-                            type="button"
-                            className="text-left text-sm font-medium"
-                            onClick={() => onOpenProject?.(project)}
-                          >
-                            {project.name}
-                          </button>
+
+                          <ShowNameButton onOpenProject={onOpenProject} project={project}>
+
+                          </ShowNameButton>
+
+
+
                         </div>
                       ))}
                     </div>

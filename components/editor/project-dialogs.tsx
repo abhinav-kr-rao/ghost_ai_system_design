@@ -22,6 +22,7 @@ interface ProjectDialogsProps {
   setProjectName: (value: string) => void;
   onClose: () => void;
   onSubmit: () => void | Promise<void>;
+  error?: string | null;
 }
 
 export function ProjectDialogs({
@@ -33,8 +34,9 @@ export function ProjectDialogs({
   setProjectName,
   onClose,
   onSubmit,
+  error,
 }: ProjectDialogsProps) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     void onSubmit();
   };
@@ -68,6 +70,7 @@ export function ProjectDialogs({
                   Room ID preview: {roomIdPreview}
                 </p>
               </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
             <DialogFooter showCloseButton>
               <Button type="submit" disabled={!projectName.trim() || isLoading}>
@@ -95,6 +98,7 @@ export function ProjectDialogs({
                 onChange={(e) => setProjectName(e.target.value)}
                 autoFocus
               />
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
             <DialogFooter showCloseButton>
               <Button type="submit" disabled={!projectName.trim() || isLoading}>
@@ -106,10 +110,7 @@ export function ProjectDialogs({
 
         {isDelete && (
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void onSubmit();
-            }}
+            onSubmit={handleSubmit}
           >
             <DialogHeader>
               <DialogTitle>Delete Project</DialogTitle>
@@ -121,6 +122,7 @@ export function ProjectDialogs({
                 ? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
+            {error && <div className="px-6 pb-4"><p className="text-sm text-destructive">{error}</p></div>}
             <DialogFooter showCloseButton>
               <Button type="submit" variant="destructive" disabled={isLoading}>
                 Delete
