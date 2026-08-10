@@ -20,7 +20,7 @@ export function EditorHome({ projects }: EditorHomeProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleOpenProject = (projectId: string) => {
-    router.push(`/editor?projectId=${encodeURIComponent(projectId)}`);
+    router.push(`/editor/${encodeURIComponent(projectId)}`);
     router.refresh();
   };
 

@@ -16,6 +16,8 @@ interface ProjectSidebarProps {
   onOpenRename?: (project: EditorProjectSummary) => void;
   onOpenDelete?: (project: EditorProjectSummary) => void;
   onOpenProject?: (project: EditorProjectSummary) => void;
+  activeProjectId?: string;
+  showBackdrop?: boolean;
 }
 
 type ShowNameButton = {
@@ -49,11 +51,13 @@ export function ProjectSidebar({
   onOpenRename,
   onOpenDelete,
   onOpenProject,
+  activeProjectId,
+  showBackdrop = true,
 }: ProjectSidebarProps) {
   return (
     <>
       {/* Backdrop scrim overlay for mobile */}
-      {isOpen && (
+      {isOpen && showBackdrop && (
         <div
           className="fixed inset-0 z-10 bg-background/80 backdrop-blur-sm sm:hidden"
           onClick={onClose}
