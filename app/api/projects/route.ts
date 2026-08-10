@@ -56,6 +56,18 @@ export async function POST(req: NextRequest) {
 
     const body = parsed.data;
 
+    // If the client supplied an `id`, treat the request as idempotent: if a
+    // project with that id already exists return it instead of attempting a
+    // duplicate create. This helps callers recover when the create succeeded
+    // but the response failed to reach the client.
+    if (body.id) {
+      const existing = await prisma.project.findUnique({ where: { id: body.id } });
+
+      if (existing) {
+        return NextResponse.json(existing);
+      }
+    }
+
     const project = await prisma.project.create({
       data: {
         id: body.id,

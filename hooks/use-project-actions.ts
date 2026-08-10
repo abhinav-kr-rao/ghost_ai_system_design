@@ -59,6 +59,7 @@ export function useProjectActions(): UseProjectActionsResult {
     setActiveProject(null);
     setProjectName("");
     setRoomSuffix(createShortUniqueSuffix());
+    setError(null);
   };
 
   const openRenameDialog = (project: EditorProjectSummary) => {
@@ -66,6 +67,7 @@ export function useProjectActions(): UseProjectActionsResult {
     setActiveProject(project);
     setProjectName(project.name);
     setRoomSuffix("");
+    setError(null);
   };
 
   const openDeleteDialog = (project: EditorProjectSummary) => {
@@ -73,6 +75,7 @@ export function useProjectActions(): UseProjectActionsResult {
     setActiveProject(project);
     setProjectName("");
     setRoomSuffix("");
+    setError(null);
   };
 
   const closeDialog = () => {

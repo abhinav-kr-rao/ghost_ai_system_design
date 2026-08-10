@@ -1,9 +1,7 @@
 
 import { redirect } from "next/navigation";
 import { AccessDenied } from "@/components/editor/access-denied";
-import { EditorNavbar } from "@/components/editor/editor-navbar";
-import { ProjectSidebar } from "@/components/editor/project-sidebar";
-import { ShareDialog } from "@/components/editor/share-dialog";
+import EditorShell from "@/components/editor/editor-shell";
 import { getCurrentUserIdentity, getProjectAccess } from "@/lib/project-access";
 import { getEditorHomeProjects } from "@/lib/projects";
 
@@ -29,25 +27,11 @@ export default async function EditorRoomPage({ params }: EditorRoomPageProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <EditorNavbar
-        isOpen={true}
-        setIsOpen={() => {}}
-        projectName={access.project.name}
-        shareAction={
-          <ShareDialog
-            projectId={access.project.id}
-            projectName={access.project.name}
-            isOwner={access.project.ownerId === identity.userId}
-          />
-        }
-      />
-      <ProjectSidebar
-        isOpen={true}
-        onClose={() => {}}
-        ownedProjects={projects.ownedProjects}
-        sharedProjects={projects.sharedProjects}
+      <EditorShell
+        project={{ id: access.project.id, name: access.project.name, ownerId: access.project.ownerId }}
+        projects={projects}
         activeProjectId={access.project.id}
-        showBackdrop={false}
+        isOwner={access.project.ownerId === identity.userId}
       />
       <main className="flex min-h-screen items-center justify-center bg-[#0f1115] px-6 py-24 pl-80 pr-80 pt-24 text-center">
         <div className="flex w-full max-w-3xl items-center justify-center rounded-xl border border-white/10 bg-[#161a22] p-8 shadow-2xl">
