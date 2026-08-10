@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,47 +10,35 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { Project, DialogType } from "@/hooks/use-project-dialogs";
+import type { DialogType } from "@/hooks/use-project-actions";
+import type { EditorProjectSummary } from "@/lib/projects";
 
 interface ProjectDialogsProps {
   activeDialog: DialogType;
-  activeProject: Project | null;
+  activeProject: EditorProjectSummary | null;
   isLoading: boolean;
+  projectName: string;
+  roomIdPreview: string;
+  setProjectName: (value: string) => void;
   onClose: () => void;
-  // Mocks for now — these aren't hooked up to APIs yet
-}
-
-function createSlug(name: string) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+  onSubmit: () => void | Promise<void>;
+  error?: string | null;
 }
 
 export function ProjectDialogs({
   activeDialog,
   activeProject,
   isLoading,
+  projectName,
+  roomIdPreview,
+  setProjectName,
   onClose,
+  onSubmit,
+  error,
 }: ProjectDialogsProps) {
-  const [projectName, setProjectName] = useState("");
-
-  useEffect(() => {
-    if (activeDialog === "rename" && activeProject) {
-      setProjectName(activeProject.name);
-    } else {
-      setProjectName("");
-    }
-  }, [activeDialog, activeProject]);
-
-  const handleSubmit = (e: React.SubmitEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!projectName.trim()) return;
-    // Mock submit
-    // console.log("The new name is ",projectName);
-    
-
-    onClose();
+    void onSubmit();
   };
 
   const isCreate = activeDialog === "create";
@@ -80,12 +67,13 @@ export function ProjectDialogs({
                   autoFocus
                 />
                 <p className="text-xs text-muted-foreground">
-                  Slug preview: {createSlug(projectName) || "project-slug"}
+                  Room ID preview: {roomIdPreview}
                 </p>
               </div>
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
             <DialogFooter showCloseButton>
-              <Button type="submit" disabled={!projectName.trim()}>
+              <Button type="submit" disabled={!projectName.trim() || isLoading}>
                 Create
               </Button>
             </DialogFooter>
@@ -110,9 +98,10 @@ export function ProjectDialogs({
                 onChange={(e) => setProjectName(e.target.value)}
                 autoFocus
               />
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
             <DialogFooter showCloseButton>
-              <Button type="submit" disabled={!projectName.trim()}>
+              <Button type="submit" disabled={!projectName.trim() || isLoading}>
                 Rename
               </Button>
             </DialogFooter>
@@ -121,11 +110,7 @@ export function ProjectDialogs({
 
         {isDelete && (
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              // Mock submit
-              onClose();
-            }}
+            onSubmit={handleSubmit}
           >
             <DialogHeader>
               <DialogTitle>Delete Project</DialogTitle>
@@ -137,8 +122,9 @@ export function ProjectDialogs({
                 ? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
+            {error && <div className="px-6 pb-4"><p className="text-sm text-destructive">{error}</p></div>}
             <DialogFooter showCloseButton>
-              <Button type="submit" variant="destructive">
+              <Button type="submit" variant="destructive" disabled={isLoading}>
                 Delete
               </Button>
             </DialogFooter>
