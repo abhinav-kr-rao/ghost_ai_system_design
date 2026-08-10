@@ -10,6 +10,8 @@ interface EditorNavbarProps {
   setIsOpen: (isOpen: boolean) => void;
   projectName?: string;
   shareAction?: ReactNode;
+  aiOpen?: boolean;
+  onToggleAI?: () => void;
 }
 
 export function EditorNavbar({
@@ -17,6 +19,8 @@ export function EditorNavbar({
   setIsOpen,
   projectName = "Editor",
   shareAction,
+  aiOpen,
+  onToggleAI,
 }: EditorNavbarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 border-b bg-background z-20">
@@ -37,15 +41,14 @@ export function EditorNavbar({
         </div>
 
         <div className="flex items-center gap-2">
-          {shareAction ? (
-            shareAction
-          ) : (
-            <Button variant="outline" size="sm">
-              <Share2 className="mr-2 h-4 w-4" />
-              Share
-            </Button>
-          )}
-          <Button variant="ghost" size="icon" aria-label="Toggle AI sidebar">
+          {shareAction ? shareAction : null}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={aiOpen ? "Close AI sidebar" : "Open AI sidebar"}
+            aria-pressed={aiOpen ?? false}
+            onClick={onToggleAI}
+          >
             <PanelRightOpen className="h-4 w-4" />
           </Button>
           <UserButton />

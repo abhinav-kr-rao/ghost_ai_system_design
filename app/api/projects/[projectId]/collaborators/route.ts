@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { Prisma } from "@/generated/prisma/client";
 
 const collaboratorSchema = z.object({
   email: z.string().trim().email(),
@@ -141,14 +142,21 @@ export async function POST(
       return new NextResponse("Collaborator already exists", { status: 409 });
     }
 
-    const collaborator = await prisma.projectCollaborator.create({
-      data: {
-        projectId,
-        email: body.data.email.toLowerCase(),
-      },
-    });
-
-    return NextResponse.json(collaborator);
+    try {
+      const collaborator = await prisma.projectCollaborator.create({
+        data: {
+          projectId,
+          email: body.data.email.toLowerCase(),
+        },
+      }); return NextResponse.json(collaborator);
+    } catch (createError) {
+      if (
+        createError instanceof Prisma.PrismaClientKnownRequestError &&
+        createError.code === "P2002"
+      ) {
+        return new NextResponse("Collaborator already exists", { status: 409 });
+      } throw createError;
+    }
   } catch (error) {
     console.error("[COLLABORATORS_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });

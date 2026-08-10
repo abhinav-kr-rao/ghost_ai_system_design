@@ -225,6 +225,7 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
                         size="icon-sm"
                         onClick={() => handleRemove(collaborator.email)}
                         disabled={isSubmitting}
+                        aria-label={`Remove collaborator ${collaborator.email}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
