@@ -58,8 +58,8 @@ export default function EditorShell({
 
       <main className="flex min-h-screen w-full flex-col bg-background lg:pl-80 lg:pr-80">
         <CanvasWrapper roomId={project.id}>
-          <div className="flex flex-1">
-            <div className="flex-1">
+          <div className="flex min-h-[calc(100vh-4rem)] flex-1">
+            <div className="relative flex-1">
               <Canvas />
             </div>
             <aside className={`${isAIOpen ? "w-80" : "w-0"} border-l border-white/10 bg-[#11141a] transition-all duration-200 ${!isAIOpen ? "overflow-hidden" : "p-6 flex flex-col"}`}>

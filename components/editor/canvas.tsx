@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -21,20 +21,41 @@ import "@liveblocks/react-flow/styles.css";
 import { CanvasNode, CanvasEdge, ShapeDragPayload, CanvasNodeData } from "@/types/canvas";
 import { ShapePanel } from "./shape-panel";
 
-// Custom canvas node renderer
-function CanvasNodeRenderer(props: any) {
+const SHAPE_CLASSES: Record<CanvasNodeData["shape"], string> = {
+  rectangle: "rounded-md",
+  circle: "rounded-full",
+  diamond: "[clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]",
+  pill: "rounded-full",
+  cylinder: "rounded-[50%/15%]",
+  hexagon: "[clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]",
+};
+
+function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
   const { data } = props as { data: CanvasNodeData };
   return (
-    <div className="flex items-center justify-center border-2 border-gray-400 bg-white rounded-md w-full h-full">
-      <Handle type="target" position={Position.Top} />
-      <span className="text-sm font-medium text-center px-2 text-gray-700">{data.label}</span>
-      <Handle type="source" position={Position.Bottom} />
+    <div
+      className={`relative h-full w-full bg-gray-400 ${SHAPE_CLASSES[data.shape]}`}
+    >
+      <div className={`absolute inset-[2px] flex items-center justify-center bg-white ${SHAPE_CLASSES[data.shape]}`}>
+        <span className="px-2 text-center text-sm font-medium text-gray-700">{data.label}</span>
+      </div>
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="!h-4 !w-4 !border-2 !border-background !bg-gray-500"
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="!h-4 !w-4 !border-2 !border-background !bg-gray-500"
+      />
     </div>
   );
 }
 
 // Canvas content component using React Flow hooks
 function CanvasContent() {
+  const [edgeType, setEdgeType] = useState<"default" | "straight">("default");
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
     useLiveblocksFlow<CanvasNode, CanvasEdge>({
       suspense: true,
@@ -106,7 +127,7 @@ function CanvasContent() {
   };
 
   return (
-    <div className="w-full h-full bg-background" onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div className="w-full h-full bg-background " onDragOver={handleDragOver} onDrop={handleDrop}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -115,14 +136,31 @@ function CanvasContent() {
         onConnect={onConnect}
         onDelete={onDelete}
         nodeTypes={nodeTypes}
+        defaultEdgeOptions={{ type: edgeType }}
         fitView
         connectionMode={ConnectionMode.Loose}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        <Controls />
+        <Controls className="canvas-controls" />
         <MiniMap />
         <Cursors />
       </ReactFlow>
+      <div className="fixed right-6 top-24 z-40 flex items-center gap-1 rounded-radius-md border border-border bg-background p-1 shadow-lg">
+        <button
+          type="button"
+          className={`rounded-radius-sm px-2 py-1 text-xs ${edgeType === "default" ? "bg-accent-primary text-white" : "text-muted-foreground"}`}
+          onClick={() => setEdgeType("default")}
+        >
+          Curvy
+        </button>
+        <button
+          type="button"
+          className={`rounded-radius-sm px-2 py-1 text-xs ${edgeType === "straight" ? "bg-accent-primary text-white" : "text-muted-foreground"}`}
+          onClick={() => setEdgeType("straight")}
+        >
+          Straight
+        </button>
+      </div>
       <ShapePanel />
     </div>
   );

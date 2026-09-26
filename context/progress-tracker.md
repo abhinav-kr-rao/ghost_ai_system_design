@@ -3,7 +3,7 @@ Update this file after every meaningful implementation change.
 ## Current Phase
 - Shape panel and node creation - COMPLETE
 ## Current Goal
-- Fix canvas rendering issue on project selection.
+- Verify the editor theme and canvas controls in the browser.
 ## Completed
 - Added the design system and UI primitive components.
 - Created components/editor/editor-navbar.tsx.
@@ -33,10 +33,15 @@ Update this file after every meaningful implementation change.
 - Implemented custom canvas node renderer for all shape types as bordered rectangles with centered labels.
 - Updated types/canvas.ts to include all shape types and ShapeDragPayload interface.
 - Generated node IDs using shape name, timestamp, and counter for uniqueness.
+- Fixed diamond and hexagon borders by rendering a gray clipped outer layer with an inset white shape.
+- Enlarged the canvas connection handles for easier line creation.
 ## In Progress
-- [None]
+- Added theme toggle with persisted light/dark mode support.
+- Moved the edge style selector inside the canvas and reduced its size.
+- Updated canvas and node colors for dark mode visibility.
+- Styled React Flow canvas controls so their icons and buttons remain visible in dark mode.
 ## Next Up
-- [None]
+- Verify the editor theme and canvas controls in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions

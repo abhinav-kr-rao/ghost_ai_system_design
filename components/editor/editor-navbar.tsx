@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { PanelLeftClose, PanelLeftOpen, PanelRightOpen, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface EditorNavbarProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ export function EditorNavbar({
           >
             <PanelRightOpen className="h-4 w-4" />
           </Button>
+          <ThemeToggle />
           <UserButton />
         </div>
       </div>
