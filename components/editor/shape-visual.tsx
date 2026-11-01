@@ -31,7 +31,7 @@ export function ShapeVisual({ shape, className = "" }: ShapeVisualProps) {
 
   return (
     <svg
-      className={`h-full w-full text-foreground ${className}`}
+      className={`h-full w-full text-border ${className}`}
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
       aria-hidden="true"

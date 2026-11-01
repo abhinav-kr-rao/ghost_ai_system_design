@@ -1,11 +1,11 @@
 "use client";
 
-import { Plus, X, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { EditorProjectSummary } from "@/lib/projects";
+import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
@@ -21,26 +21,21 @@ interface ProjectSidebarProps {
 }
 
 type ShowNameButton = {
-
   onOpenProject?: (project: EditorProjectSummary) => void;
-  project: EditorProjectSummary
-}
-
-
+  project: EditorProjectSummary;
+};
 
 const ShowNameButton = ({ onOpenProject, project }: ShowNameButton) => {
-
-  return <button
-    type="button"
-    className="text-left text-sm font-medium"
-    onClick={() => onOpenProject?.(project)}
-  >
-    {project.name}
-
-
-  </button>
-
-}
+  return (
+    <button
+      type="button"
+      className="text-left text-sm font-medium"
+      onClick={() => onOpenProject?.(project)}
+    >
+      {project.name}
+    </button>
+  );
+};
 
 export function ProjectSidebar({
   isOpen,
@@ -58,7 +53,8 @@ export function ProjectSidebar({
     <>
       {/* Backdrop scrim overlay for mobile */}
       {isOpen && showBackdrop && (
-        <div
+        <button
+        type="button"
           className="fixed inset-0 z-10 bg-background/80 backdrop-blur-sm sm:hidden"
           onClick={onClose}
         />
@@ -95,16 +91,15 @@ export function ProjectSidebar({
                 ) : (
                   <ScrollArea className="h-full pr-4 -mr-4">
                     <div className="space-y-1">
-
-
                       {ownedProjects.map((project) => (
                         <div
                           key={project.id}
                           className="group flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted"
                         >
-                          <ShowNameButton onOpenProject={onOpenProject} project={project}>
-
-                          </ShowNameButton>
+                          <ShowNameButton
+                            onOpenProject={onOpenProject}
+                            project={project}
+                          ></ShowNameButton>
 
                           <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
                             <Button
@@ -145,20 +140,15 @@ export function ProjectSidebar({
                 ) : (
                   <ScrollArea className="h-full pr-4 -mr-4">
                     <div className="space-y-1">
-
-
                       {sharedProjects.map((project) => (
                         <div
                           key={project.id}
                           className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted"
                         >
-
-                          <ShowNameButton onOpenProject={onOpenProject} project={project}>
-
-                          </ShowNameButton>
-
-
-
+                          <ShowNameButton
+                            onOpenProject={onOpenProject}
+                            project={project}
+                          ></ShowNameButton>
                         </div>
                       ))}
                     </div>

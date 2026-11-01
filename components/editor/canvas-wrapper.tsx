@@ -1,9 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
-import { LiveblocksProvider } from "@liveblocks/react/suspense";
 import { RoomProvider } from "@liveblocks/react";
-import { ClientSideSuspense } from "@liveblocks/react/suspense";
+import {
+  ClientSideSuspense,
+  LiveblocksProvider,
+} from "@liveblocks/react/suspense";
+import type { ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 interface CanvasWrapperProps {
@@ -25,9 +27,22 @@ function ErrorFallback({ error }: { error: Error }) {
 export function CanvasWrapper({ roomId, children }: CanvasWrapperProps) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-      <RoomProvider id={roomId} initialPresence={{ cursor: { x: 0, y: 0 }, isThinking: false }}>
-        <ErrorBoundary fallback={<ErrorFallback error={new Error("Canvas connection failed")} />}>
-          <ClientSideSuspense fallback={<div className="flex items-center justify-center h-full">Loading canvas...</div>}>
+      <RoomProvider
+        id={roomId}
+        initialPresence={{ cursor: { x: 0, y: 0 }, isThinking: false }}
+      >
+        <ErrorBoundary
+          fallback={
+            <ErrorFallback error={new Error("Canvas connection failed")} />
+          }
+        >
+          <ClientSideSuspense
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                Loading canvas...
+              </div>
+            }
+          >
             {children}
           </ClientSideSuspense>
         </ErrorBoundary>

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Lock } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export function AccessDenied() {
@@ -11,7 +11,8 @@ export function AccessDenied() {
         </div>
         <h1 className="mb-2 text-2xl font-semibold">Access denied</h1>
         <p className="mb-6 text-sm text-muted-foreground">
-          You do not have permission to view this workspace or it no longer exists.
+          You do not have permission to view this workspace or it no longer
+          exists.
         </p>
         <Button asChild>
           <Link href="/editor">Back to editor</Link>

@@ -42,6 +42,7 @@ Update this file after every meaningful implementation change.
 - Corrected Liveblocks best-practice reference examples for composer submission, Lexical toolbars, React Flow suspense, multiple editors, primitives, notification emails, unsaved changes, and Yjs package-manager overrides.
 - Added cursor-attached drag previews for every shape using the same default dimensions as dropped nodes.
 - Updated canvas shape rendering to use CSS shapes for rectangles, pills, and circles and scalable SVG shapes for diamonds, hexagons, and cylinders.
+- Standardized all shape borders to use the same border token and fixed drag-preview cleanup to avoid stale event targets.
 ## In Progress
 - Added theme toggle with persisted light/dark mode support.
 - Updated canvas and node colors for dark mode visibility.

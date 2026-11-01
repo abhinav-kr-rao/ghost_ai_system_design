@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { ShapeDragPayload } from "@/types/canvas";
+import type React from "react";
 import { Button } from "@/components/ui/button";
+import type { ShapeDragPayload } from "@/types/canvas";
 
 export type ShapeType =
   | "rectangle"
@@ -37,6 +37,7 @@ export function ShapePanel() {
     };
     e.dataTransfer.effectAllowed = "copy";
     e.dataTransfer.setData("application/json", JSON.stringify(payload));
+    const dragSource = e.currentTarget;
 
     const preview = document.createElement("div");
     preview.style.position = "absolute";
@@ -70,7 +71,7 @@ export function ShapePanel() {
       svg.setAttribute("preserveAspectRatio", "none");
       svg.setAttribute("width", "100%");
       svg.setAttribute("height", "100%");
-      svg.classList.add("text-foreground");
+      svg.classList.add("text-border");
 
       const shapeElement = document.createElementNS(
         svgNamespace,
@@ -97,9 +98,9 @@ export function ShapePanel() {
 
     const cleanupPreview = () => {
       preview.remove();
-      e.currentTarget.removeEventListener("dragend", cleanupPreview);
+      dragSource.removeEventListener("dragend", cleanupPreview);
     };
-    e.currentTarget.addEventListener("dragend", cleanupPreview, { once: true });
+    dragSource.addEventListener("dragend", cleanupPreview, { once: true });
   };
 
   return (

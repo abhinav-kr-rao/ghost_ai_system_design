@@ -7,5 +7,13 @@
    - **Root Cause:** The workspace editor rendered the sidebar without passing rename/delete handlers or mounting the project dialogs.
    - **Fix:** Wired the existing project action hook and `ProjectDialogs` into `components/editor/editor-shell.tsx`.
 
-## Current Issues
-1. The Rectangle, Circle and Pill shapes have lighter and thinner borders than Diamond cylinder and hexagon shapes. Make the borders of all shapes consistent
+3. Shape borders were inconsistent between CSS-rendered and SVG-rendered shapes.
+   - **Fix:** Standardized all shape borders to use the same border token and two-pixel width in both previews and dropped nodes.
+
+4. Dragging a shape from the panel caused a `currentTarget is null` cleanup error.
+   - **Fix:** Captured the drag source before cleanup so the preview can be removed without reading the cleared event target.
+
+## Verification
+- All shape borders use the `border-border` token and a consistent two-pixel width in both drag previews and dropped canvas nodes.
+- Drag-preview cleanup no longer reads `event.currentTarget` after the event callback.
+- `npm run build` passes.
