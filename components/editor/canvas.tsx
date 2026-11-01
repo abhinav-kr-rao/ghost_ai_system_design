@@ -56,7 +56,7 @@ function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
       className={`relative h-full w-full bg-gray-400 ${SHAPE_CLASSES[data.shape]}`}
     >
       <div
-        className={`absolute inset-[2px] flex items-center justify-center bg-white ${SHAPE_CLASSES[data.shape]}`}
+        className={`absolute inset-0.5 flex items-center justify-center bg-white ${SHAPE_CLASSES[data.shape]}`}
       >
         <span className="px-2 text-center text-sm font-medium text-gray-700">
           {data.label}
