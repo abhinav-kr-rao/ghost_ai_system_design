@@ -3,9 +3,11 @@
 import React, { useState } from "react";
 import { EditorNavbar } from "./editor-navbar";
 import { ProjectSidebar } from "./project-sidebar";
+import { ProjectDialogs } from "./project-dialogs";
 import { ShareDialog } from "./share-dialog";
 import { CanvasWrapper } from "./canvas-wrapper";
 import { Canvas } from "./canvas";
+import { useProjectActions } from "@/hooks/use-project-actions";
 import type { EditorHomeProjects } from "@/lib/projects";
 
 interface EditorShellProps {
@@ -21,6 +23,7 @@ export default function EditorShell({
   activeProjectId,
   isOwner = false,
 }: EditorShellProps) {
+  const actions = useProjectActions();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAIOpen, setIsAIOpen] = useState(false);
 
@@ -53,7 +56,22 @@ export default function EditorShell({
         sharedProjects={projects.sharedProjects}
         activeProjectId={activeProjectId}
         showBackdrop={false}
+        onOpenCreate={actions.openCreateDialog}
+        onOpenRename={actions.openRenameDialog}
+        onOpenDelete={actions.openDeleteDialog}
         onOpenProject={(p) => handleOpenProject(p.id)}
+      />
+
+      <ProjectDialogs
+        activeDialog={actions.activeDialog}
+        activeProject={actions.activeProject}
+        isLoading={actions.isLoading}
+        projectName={actions.projectName}
+        roomIdPreview={actions.roomIdPreview}
+        setProjectName={actions.setProjectName}
+        onClose={actions.closeDialog}
+        onSubmit={actions.submitDialog}
+        error={actions.error}
       />
 
       <main className="flex min-h-screen w-full flex-col bg-background lg:pl-80 lg:pr-80">

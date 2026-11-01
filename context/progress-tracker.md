@@ -35,13 +35,14 @@ Update this file after every meaningful implementation change.
 - Generated node IDs using shape name, timestamp, and counter for uniqueness.
 - Fixed diamond and hexagon borders by rendering a gray clipped outer layer with an inset white shape.
 - Enlarged the canvas connection handles for easier line creation.
+- Wired rename and delete actions plus their existing dialogs into the workspace project sidebar.
 ## In Progress
 - Added theme toggle with persisted light/dark mode support.
 - Moved the edge style selector inside the canvas and reduced its size.
 - Updated canvas and node colors for dark mode visibility.
 - Styled React Flow canvas controls so their icons and buttons remain visible in dark mode.
 ## Next Up
-- Verify the editor theme and canvas controls in the browser.
+- Verify the editor theme, canvas controls, and project actions in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions
