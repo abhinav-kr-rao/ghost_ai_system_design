@@ -25,13 +25,14 @@ In real use, you could store each editor's ID in Liveblocks storage:
 import { useStorage, useMutation } from "@liveblocks/react/suspense";
 import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { nanoid } from "nanoid";
 
 function TextEditors() {
   const editorIds = useStorage((root) => root.editorIds);
 
   const newEditor = useMutation(({ storage }) => {
     const newId = nanoid();
-    storage.get("editorsIds").push(newId);
+    storage.get("editorIds").push(newId);
   }, []);
 
   return (
@@ -39,14 +40,17 @@ function TextEditors() {
       {editorIds.map((editorId) => (
         <TextEditor key={editorId} field={editorId} />
       ))}
-      <button>New editor</button>
+      <button onClick={newEditor}>New editor</button>
     </div>
   );
 }
 
 function TextEditor({ field }: { field: string }) {
   const liveblocks = useLiveblocksExtension({
-    field: "editor-one",
+    field,
+  });
+  const editor = useEditor({
+    extensions: [liveblocks],
   });
 
   return (
@@ -56,6 +60,9 @@ function TextEditor({ field }: { field: string }) {
   );
 }
 ```
+
+This example uses [`nanoid`](https://www.npmjs.com/package/nanoid) to generate
+editor IDs. Install it with `npm install nanoid` before using the example.
 
 ```ts file="liveblocks.config.ts"
 import { LiveList } from "@liveblocks/client";

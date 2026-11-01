@@ -36,6 +36,7 @@ function Editor() {
     <>
       <Composer.Editor components={/* Your custom component parts */} />
       <button onClick={createMention}>Add mention</button>
+      <Composer.Submit>Submit</Composer.Submit>
     </>
   );
 }

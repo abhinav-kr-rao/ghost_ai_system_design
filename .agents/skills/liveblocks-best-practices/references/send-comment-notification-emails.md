@@ -46,6 +46,10 @@ export async function POST(request: Request) {
       event
     );
 
+    if (!emailData) {
+      return new Response(null, { status: 200 });
+    }
+
     if (emailData.type === "unreadMention") {
       const email = (
         <div>

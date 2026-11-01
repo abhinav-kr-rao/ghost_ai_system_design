@@ -14,12 +14,26 @@ npm install @liveblocks/react-flow @xyflow/react
 "use client";
 
 import { ReactFlow } from "@xyflow/react";
+import {
+  ClientSideSuspense,
+  RoomProvider,
+} from "@liveblocks/react/suspense";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
 import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-flow/styles.css";
 
 export function Flow() {
+  return (
+    <RoomProvider id="my-room-id">
+      <ClientSideSuspense fallback={<div>Loading flow…</div>}>
+        <FlowContent />
+      </ClientSideSuspense>
+    </RoomProvider>
+  );
+}
+
+function FlowContent() {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
     useLiveblocksFlow({
       suspense: true,

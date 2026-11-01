@@ -39,6 +39,7 @@ Update this file after every meaningful implementation change.
 - Moved the Curvy/Straight toggle into the navbar and applied its selection to existing and new edges.
 - Added source and target connection handles on all four sides of each canvas shape.
 - Reduced the AI sidebar width and removed the permanent right-side canvas reservation.
+- Corrected Liveblocks best-practice reference examples for composer submission, Lexical toolbars, React Flow suspense, multiple editors, primitives, notification emails, unsaved changes, and Yjs package-manager overrides.
 ## In Progress
 - Added theme toggle with persisted light/dark mode support.
 - Updated canvas and node colors for dark mode visibility.

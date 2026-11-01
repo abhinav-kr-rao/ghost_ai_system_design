@@ -206,13 +206,20 @@ Remember to export from `"@liveblocks/react-lexical"` for Lexical. Export and
 use `{ FloatingToolbar }` if you'd like to modify the floating version.
 
 ```tsx
-import { FloatingToolbar, Toolbar } from "@liveblocks/react-lexical";
+import {
+  FloatingToolbar,
+  isTextFormatActive,
+  Toolbar,
+} from "@liveblocks/react-lexical";
 import { Icon } from "@liveblocks/react-ui";
-import { Editor } from "@tiptap/react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { FORMAT_TEXT_COMMAND } from "lexical";
 
-function CustomToolbar({ editor }: { editor: Editor | null }) {
+function CustomToolbar() {
+  const [editor] = useLexicalComposerContext();
+
   return (
-    <FloatingToolbar editor={editor}>
+    <FloatingToolbar>
       <Toolbar.SectionHistory />
       <Toolbar.Separator />
       <Toolbar.Button
@@ -224,9 +231,8 @@ function CustomToolbar({ editor }: { editor: Editor | null }) {
       <Toolbar.Toggle
         name="Highlight"
         icon={<div>🖊️</div>}
-        active={editor?.isActive("highlight") ?? false}
-        onClick={() => editor?.chain().focus().toggleHighlight().run()}
-        disabled={!editor?.can().chain().focus().toggleHighlight().run()}
+        active={isTextFormatActive(editor, "highlight")}
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight")}
       />
     </FloatingToolbar>
   );

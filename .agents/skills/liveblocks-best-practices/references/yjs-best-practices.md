@@ -23,21 +23,19 @@ If you find duplicate Yjs imports, you can:
    Yjs to a single version:
 
 ```json
-// package.json (npm/yarn)
+// package.json (npm)
 {
-  "resolutions": {
+  "overrides": {
     "yjs": "^13.6.0"
   }
 }
 ```
 
 ```json
-// package.json (pnpm)
+// package.json (yarn)
 {
-  "pnpm": {
-    "overrides": {
-      "yjs": "^13.6.0"
-    }
+  "resolutions": {
+    "yjs": "^13.6.0"
   }
 }
 ```
