@@ -27,16 +27,7 @@ import type {
   ShapeDragPayload,
 } from "@/types/canvas";
 import { ShapePanel } from "./shape-panel";
-
-const SHAPE_CLASSES: Record<CanvasNodeData["shape"], string> = {
-  rectangle: "rounded-md",
-  circle: "rounded-full",
-  diamond: "[clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]",
-  pill: "rounded-full",
-  cylinder: "rounded-[50%/15%]",
-  hexagon:
-    "[clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]",
-};
+import { ShapeVisual } from "./shape-visual";
 
 function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
   const { data } = props;
@@ -52,13 +43,10 @@ function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
   ];
 
   return (
-    <div
-      className={`relative h-full w-full bg-gray-400 ${SHAPE_CLASSES[data.shape]}`}
-    >
-      <div
-        className={`absolute inset-0.5 flex items-center justify-center bg-white ${SHAPE_CLASSES[data.shape]}`}
-      >
-        <span className="px-2 text-center text-sm font-medium text-gray-700">
+    <div className="relative h-full w-full">
+      <ShapeVisual shape={data.shape} className="absolute inset-0" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="px-2 text-center text-sm font-medium text-primary">
           {data.label}
         </span>
       </div>
