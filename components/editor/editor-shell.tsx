@@ -1,10 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { useProjectActions } from "@/hooks/use-project-actions";
+import type { EditorHomeProjects } from "@/lib/projects";
+import type { CanvasEdgeType } from "@/types/canvas";
+import { Canvas } from "./canvas";
+import { CanvasWrapper } from "./canvas-wrapper";
 import { EditorNavbar } from "./editor-navbar";
+import { ProjectDialogs } from "./project-dialogs";
 import { ProjectSidebar } from "./project-sidebar";
 import { ShareDialog } from "./share-dialog";
-import type { EditorHomeProjects } from "@/lib/projects";
 
 interface EditorShellProps {
   project: { id: string; name: string; ownerId?: string };
@@ -19,8 +24,10 @@ export default function EditorShell({
   activeProjectId,
   isOwner = false,
 }: EditorShellProps) {
+  const actions = useProjectActions();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [edgeType, setEdgeType] = useState<CanvasEdgeType>("default");
 
   const handleOpenProject = (projectId: string) => {
     window.location.href = `/editor/${encodeURIComponent(projectId)}`;
@@ -43,6 +50,8 @@ export default function EditorShell({
         }
         aiOpen={isAIOpen}
         onToggleAI={toggleAI}
+        edgeType={edgeType}
+        onEdgeTypeChange={setEdgeType}
       />
       <ProjectSidebar
         isOpen={isSidebarOpen}
@@ -51,33 +60,48 @@ export default function EditorShell({
         sharedProjects={projects.sharedProjects}
         activeProjectId={activeProjectId}
         showBackdrop={false}
+        onOpenCreate={actions.openCreateDialog}
+        onOpenRename={actions.openRenameDialog}
+        onOpenDelete={actions.openDeleteDialog}
         onOpenProject={(p) => handleOpenProject(p.id)}
       />
 
-      <main className="flex min-h-screen items-center justify-center bg-[#0f1115] px-6 py-24 lg:pl-80 lg:pr-80 text-center">
-        <div className="flex w-full max-w-3xl items-center justify-center rounded-xl border border-white/10 bg-[#161a22] p-8 shadow-2xl">
-          <div className="max-w-xl">
-            <p className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
-              Workspace Preview
-            </p>
-            <h1 className="mb-3 text-3xl font-semibold text-white">
-              {project.name}
-            </h1>
-            <p className="text-sm leading-6 text-muted-foreground">
-              The collaborative canvas shell is ready. The next step will add the interactive editor surface and AI panel.
-            </p>
+      <ProjectDialogs
+        activeDialog={actions.activeDialog}
+        activeProject={actions.activeProject}
+        isLoading={actions.isLoading}
+        projectName={actions.projectName}
+        roomIdPreview={actions.roomIdPreview}
+        setProjectName={actions.setProjectName}
+        onClose={actions.closeDialog}
+        onSubmit={actions.submitDialog}
+        error={actions.error}
+      />
+
+      <main className="flex min-h-screen w-full flex-col bg-background lg:pl-80">
+        <CanvasWrapper roomId={project.id}>
+          <div className="flex min-h-[calc(100vh-4rem)] flex-1">
+            <div className="relative flex-1">
+              <Canvas edgeType={edgeType} />
+            </div>
+            <aside
+              className={`${isAIOpen ? "w-100" : "w-0"} border-l border-border bg-background transition-all duration-200 ${!isAIOpen ? "overflow-hidden" : "flex flex-col p-4"}`}
+            >
+              {isAIOpen && (
+                <>
+                  <div className="mb-4">
+                    <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                      AI Assistant
+                    </h2>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/10 p-6 text-center text-sm text-muted-foreground">
+                    AI chat panel coming soon.
+                  </div>
+                </>
+              )}
+            </aside>
           </div>
-        </div>
-        <aside className={`fixed right-0 top-16 hidden h-[calc(100vh-4rem)] w-80 border-l border-white/10 bg-[#11141a] p-6 lg:flex lg:flex-col ${isAIOpen ? "" : "hidden"}`}>
-          <div className="mb-4">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              AI Assistant
-            </h2>
-          </div>
-          <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/10 p-6 text-center text-sm text-muted-foreground">
-            AI chat panel coming soon.
-          </div>
-        </aside>
+        </CanvasWrapper>
       </main>
     </>
   );
