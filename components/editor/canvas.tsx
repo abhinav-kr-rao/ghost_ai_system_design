@@ -10,12 +10,14 @@ import {
   Handle,
   MiniMap,
   type NodeAddChange,
+  type NodeProps,
+  NodeResizer,
   Position,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
 } from "@xyflow/react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-flow/styles.css";
@@ -23,14 +25,24 @@ import type {
   CanvasEdge,
   CanvasEdgeType,
   CanvasNode,
-  CanvasNodeData,
   ShapeDragPayload,
 } from "@/types/canvas";
 import { ShapePanel } from "./shape-panel";
 import { ShapeVisual } from "./shape-visual";
 
-function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
-  const { data } = props;
+interface CanvasNodeRendererProps extends NodeProps<CanvasNode> {
+  onLabelChange: (nodeId: string, label: string) => void;
+}
+
+function CanvasNodeRenderer({
+  id,
+  data,
+  selected,
+  onLabelChange,
+}: CanvasNodeRendererProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftLabel, setDraftLabel] = useState(data.label);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const handlePositions = [
     { type: "target" as const, position: Position.Top, id: "target-top" },
     { type: "source" as const, position: Position.Top, id: "source-top" },
@@ -42,13 +54,71 @@ function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
     { type: "source" as const, position: Position.Left, id: "source-left" },
   ];
 
+  useEffect(() => {
+    if (isEditing) {
+      textareaRef.current?.focus();
+      textareaRef.current?.select();
+    }
+  }, [isEditing]);
+
+  const startEditing = useCallback(() => {
+    setDraftLabel(data.label);
+    setIsEditing(true);
+  }, [data.label]);
+
+  const handleLabelChange = useCallback(
+    (label: string) => {
+      setDraftLabel(label);
+      onLabelChange(id, label);
+    },
+    [id, onLabelChange],
+  );
+
+  const handleLabelKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      event.stopPropagation();
+      if (event.key === "Escape") {
+        setIsEditing(false);
+      }
+    },
+    [],
+  );
+
   return (
     <div className="relative h-full w-full">
+      <NodeResizer
+        isVisible={selected}
+        minWidth={80}
+        minHeight={48}
+        handleClassName="!h-2 !w-2 !border-2 !border-background !bg-accent-primary"
+        lineClassName="!border-accent-primary/60"
+      />
       <ShapeVisual shape={data.shape} className="absolute inset-0" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="px-2 text-center text-sm font-medium text-primary">
-          {data.label}
-        </span>
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
+        {isEditing ? (
+          <textarea
+            ref={textareaRef}
+            value={draftLabel}
+            onChange={(event) => handleLabelChange(event.target.value)}
+            onBlur={() => setIsEditing(false)}
+            onKeyDown={handleLabelKeyDown}
+            onPointerDown={(event) => event.stopPropagation()}
+            aria-label="Edit node label"
+            className="h-full w-full resize-none overflow-hidden border-0 bg-transparent px-2 py-1 text-center text-sm font-medium text-primary outline-none"
+          />
+        ) : (
+          <button
+            type="button"
+            onDoubleClick={startEditing}
+            onPointerDown={(event) => event.stopPropagation()}
+            aria-label={data.label || "Node label"}
+            className={`h-full w-full border-0 bg-transparent px-2 text-center text-sm font-medium outline-none ${
+              data.label ? "text-primary" : "text-secondary"
+            }`}
+          >
+            {data.label || "Add label"}
+          </button>
+        )}
       </div>
       {handlePositions.map((handle) => (
         <Handle
@@ -81,7 +151,9 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
     });
 
   const { screenToFlowPosition } = useReactFlow();
+  const nodesRef = useRef(nodes);
   const nodeCounterRef = useRef<Record<string, number>>({});
+  nodesRef.current = nodes;
   const renderedEdges = useMemo(
     () => edges.map((edge) => ({ ...edge, type: edgeType })),
     [edges, edgeType],
@@ -151,9 +223,40 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
     [edgeType, onConnect],
   );
 
-  const nodeTypes = {
-    canvasNode: CanvasNodeRenderer,
-  };
+  const handleLabelChange = useCallback(
+    (nodeId: string, label: string) => {
+      const node = nodesRef.current.find(
+        (candidate) => candidate.id === nodeId,
+      );
+      if (!node) {
+        return;
+      }
+
+      onNodesChange([
+        {
+          id: nodeId,
+          type: "replace",
+          item: {
+            ...node,
+            data: {
+              ...node.data,
+              label,
+            },
+          },
+        },
+      ]);
+    },
+    [onNodesChange],
+  );
+
+  const nodeTypes = useMemo(
+    () => ({
+      canvasNode: (props: NodeProps<CanvasNode>) => (
+        <CanvasNodeRenderer {...props} onLabelChange={handleLabelChange} />
+      ),
+    }),
+    [handleLabelChange],
+  );
 
   return (
     <div

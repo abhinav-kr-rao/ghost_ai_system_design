@@ -1,9 +1,9 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Canvas edge controls, AI sidebar, and shape drag previews - COMPLETE
+- Canvas node resizing and inline label editing - COMPLETE
 ## Current Goal
-- Verify the editor theme and canvas controls in the browser.
+- Verify the editor theme, canvas controls, node resizing, and inline label editing in the browser.
 ## Completed
 - Added the design system and UI primitive components.
 - Created components/editor/editor-navbar.tsx.
@@ -43,12 +43,14 @@ Update this file after every meaningful implementation change.
 - Added cursor-attached drag previews for every shape using the same default dimensions as dropped nodes.
 - Updated canvas shape rendering to use CSS shapes for rectangles, pills, and circles and scalable SVG shapes for diamonds, hexagons, and cylinders.
 - Standardized all shape borders to use the same border token and fixed drag-preview cleanup to avoid stale event targets.
+- Added selected-node resize handles with minimum dimensions and collaborative dimension updates.
+- Added centered inline node label editing with placeholder text, synchronized typing, blur/Escape close behavior, and canvas interaction protection.
 ## In Progress
 - Added theme toggle with persisted light/dark mode support.
 - Updated canvas and node colors for dark mode visibility.
 - Styled React Flow canvas controls so their icons and buttons remain visible in dark mode.
 ## Next Up
-- Verify the editor theme, canvas controls, edge connections, project actions, and shape drag previews in the browser.
+- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, project actions, and shape drag previews in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions
