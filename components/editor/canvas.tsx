@@ -1,24 +1,31 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { Cursors, useLiveblocksFlow } from "@liveblocks/react-flow";
 import {
+  Background,
+  BackgroundVariant,
+  type Connection,
+  ConnectionMode,
+  Controls,
+  Handle,
+  MiniMap,
+  type NodeAddChange,
+  Position,
   ReactFlow,
   ReactFlowProvider,
-  ConnectionMode,
-  Background,
-  Controls,
-  MiniMap,
-  BackgroundVariant,
   useReactFlow,
-  Handle,
-  Position,
-  NodeAddChange,
 } from "@xyflow/react";
-import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
+import { useCallback, useMemo, useRef } from "react";
 import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-flow/styles.css";
-import { CanvasNode, CanvasEdge, ShapeDragPayload, CanvasNodeData } from "@/types/canvas";
+import type {
+  CanvasEdge,
+  CanvasEdgeType,
+  CanvasNode,
+  CanvasNodeData,
+  ShapeDragPayload,
+} from "@/types/canvas";
 import { ShapePanel } from "./shape-panel";
 
 const SHAPE_CLASSES: Record<CanvasNodeData["shape"], string> = {
@@ -27,35 +34,53 @@ const SHAPE_CLASSES: Record<CanvasNodeData["shape"], string> = {
   diamond: "[clip-path:polygon(50%_0%,100%_50%,50%_100%,0%_50%)]",
   pill: "rounded-full",
   cylinder: "rounded-[50%/15%]",
-  hexagon: "[clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]",
+  hexagon:
+    "[clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]",
 };
 
 function CanvasNodeRenderer(props: { data: CanvasNodeData }) {
-  const { data } = props as { data: CanvasNodeData };
+  const { data } = props;
+  const handlePositions = [
+    { type: "target" as const, position: Position.Top, id: "target-top" },
+    { type: "source" as const, position: Position.Top, id: "source-top" },
+    { type: "target" as const, position: Position.Right, id: "target-right" },
+    { type: "source" as const, position: Position.Right, id: "source-right" },
+    { type: "target" as const, position: Position.Bottom, id: "target-bottom" },
+    { type: "source" as const, position: Position.Bottom, id: "source-bottom" },
+    { type: "target" as const, position: Position.Left, id: "target-left" },
+    { type: "source" as const, position: Position.Left, id: "source-left" },
+  ];
+
   return (
     <div
       className={`relative h-full w-full bg-gray-400 ${SHAPE_CLASSES[data.shape]}`}
     >
-      <div className={`absolute inset-[2px] flex items-center justify-center bg-white ${SHAPE_CLASSES[data.shape]}`}>
-        <span className="px-2 text-center text-sm font-medium text-gray-700">{data.label}</span>
+      <div
+        className={`absolute inset-[2px] flex items-center justify-center bg-white ${SHAPE_CLASSES[data.shape]}`}
+      >
+        <span className="px-2 text-center text-sm font-medium text-gray-700">
+          {data.label}
+        </span>
       </div>
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="!h-4 !w-4 !border-2 !border-background !bg-gray-500"
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!h-4 !w-4 !border-2 !border-background !bg-gray-500"
-      />
+      {handlePositions.map((handle) => (
+        <Handle
+          key={handle.id}
+          type={handle.type}
+          position={handle.position}
+          id={handle.id}
+          className="h-3! w-3! border-2! border-background! bg-gray-500!"
+        />
+      ))}
     </div>
   );
 }
 
 // Canvas content component using React Flow hooks
-function CanvasContent() {
-  const [edgeType, setEdgeType] = useState<"default" | "straight">("default");
+interface CanvasContentProps {
+  edgeType: CanvasEdgeType;
+}
+
+function CanvasContent({ edgeType }: CanvasContentProps) {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
     useLiveblocksFlow<CanvasNode, CanvasEdge>({
       suspense: true,
@@ -69,6 +94,10 @@ function CanvasContent() {
 
   const { screenToFlowPosition } = useReactFlow();
   const nodeCounterRef = useRef<Record<string, number>>({});
+  const renderedEdges = useMemo(
+    () => edges.map((edge) => ({ ...edge, type: edgeType })),
+    [edges, edgeType],
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -90,7 +119,8 @@ function CanvasContent() {
         });
 
         // Generate node ID
-        nodeCounterRef.current[payload.shape] = (nodeCounterRef.current[payload.shape] || 0) + 1;
+        nodeCounterRef.current[payload.shape] =
+          (nodeCounterRef.current[payload.shape] || 0) + 1;
         const nodeId = `${payload.shape}-${Date.now()}-${nodeCounterRef.current[payload.shape]}`;
 
         // Create new node
@@ -110,11 +140,11 @@ function CanvasContent() {
         };
 
         // Add node using the onNodesChange handler
-        const addChange: NodeAddChange = {
+        const addChange: NodeAddChange<CanvasNode> = {
           item: newNode,
           type: "add",
         };
-        onNodesChange([addChange as any]);
+        onNodesChange([addChange]);
       } catch (error) {
         console.error("Failed to parse drag data:", error);
       }
@@ -122,21 +152,37 @@ function CanvasContent() {
     [screenToFlowPosition, onNodesChange],
   );
 
+  const handleConnect = useCallback(
+    (connection: Connection) => {
+      const connectionWithType: Connection & { type: CanvasEdgeType } = {
+        ...connection,
+        type: edgeType,
+      };
+      onConnect(connectionWithType);
+    },
+    [edgeType, onConnect],
+  );
+
   const nodeTypes = {
     canvasNode: CanvasNodeRenderer,
   };
 
   return (
-    <div className="w-full h-full bg-background " onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div
+      className="h-full w-full bg-background"
+      role="application"
+      aria-label="Architecture canvas"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={renderedEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onConnect={handleConnect}
         onDelete={onDelete}
         nodeTypes={nodeTypes}
-        defaultEdgeOptions={{ type: edgeType }}
         fitView
         connectionMode={ConnectionMode.Loose}
       >
@@ -145,31 +191,15 @@ function CanvasContent() {
         <MiniMap />
         <Cursors />
       </ReactFlow>
-      <div className="fixed right-6 top-24 z-40 flex items-center gap-1 rounded-radius-md border border-border bg-background p-1 shadow-lg">
-        <button
-          type="button"
-          className={`rounded-radius-sm px-2 py-1 text-xs ${edgeType === "default" ? "bg-accent-primary text-white" : "text-muted-foreground"}`}
-          onClick={() => setEdgeType("default")}
-        >
-          Curvy
-        </button>
-        <button
-          type="button"
-          className={`rounded-radius-sm px-2 py-1 text-xs ${edgeType === "straight" ? "bg-accent-primary text-white" : "text-muted-foreground"}`}
-          onClick={() => setEdgeType("straight")}
-        >
-          Straight
-        </button>
-      </div>
       <ShapePanel />
     </div>
   );
 }
 
-export function Canvas() {
+export function Canvas({ edgeType }: CanvasContentProps) {
   return (
     <ReactFlowProvider>
-      <CanvasContent />
+      <CanvasContent edgeType={edgeType} />
     </ReactFlowProvider>
   );
 }

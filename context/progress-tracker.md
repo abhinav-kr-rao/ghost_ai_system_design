@@ -1,7 +1,7 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Shape panel and node creation - COMPLETE
+- Canvas edge controls and AI sidebar - COMPLETE
 ## Current Goal
 - Verify the editor theme and canvas controls in the browser.
 ## Completed
@@ -36,13 +36,15 @@ Update this file after every meaningful implementation change.
 - Fixed diamond and hexagon borders by rendering a gray clipped outer layer with an inset white shape.
 - Enlarged the canvas connection handles for easier line creation.
 - Wired rename and delete actions plus their existing dialogs into the workspace project sidebar.
+- Moved the Curvy/Straight toggle into the navbar and applied its selection to existing and new edges.
+- Added source and target connection handles on all four sides of each canvas shape.
+- Reduced the AI sidebar width and removed the permanent right-side canvas reservation.
 ## In Progress
 - Added theme toggle with persisted light/dark mode support.
-- Moved the edge style selector inside the canvas and reduced its size.
 - Updated canvas and node colors for dark mode visibility.
 - Styled React Flow canvas controls so their icons and buttons remain visible in dark mode.
 ## Next Up
-- Verify the editor theme, canvas controls, and project actions in the browser.
+- Verify the editor theme, canvas controls, edge connections, and project actions in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions

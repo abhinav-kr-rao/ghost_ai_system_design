@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       cursorColor: getUserCursorColor(identity.userId),
     });
 
-    console.log("------------------token is \n\n",token);
+    // console.log("------------------token is \n\n",token);
     
 
     return NextResponse.json({

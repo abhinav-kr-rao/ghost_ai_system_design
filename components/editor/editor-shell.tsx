@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { EditorNavbar } from "./editor-navbar";
-import { ProjectSidebar } from "./project-sidebar";
-import { ProjectDialogs } from "./project-dialogs";
-import { ShareDialog } from "./share-dialog";
-import { CanvasWrapper } from "./canvas-wrapper";
-import { Canvas } from "./canvas";
+import { useState } from "react";
 import { useProjectActions } from "@/hooks/use-project-actions";
 import type { EditorHomeProjects } from "@/lib/projects";
+import type { CanvasEdgeType } from "@/types/canvas";
+import { Canvas } from "./canvas";
+import { CanvasWrapper } from "./canvas-wrapper";
+import { EditorNavbar } from "./editor-navbar";
+import { ProjectDialogs } from "./project-dialogs";
+import { ProjectSidebar } from "./project-sidebar";
+import { ShareDialog } from "./share-dialog";
 
 interface EditorShellProps {
   project: { id: string; name: string; ownerId?: string };
@@ -26,6 +27,7 @@ export default function EditorShell({
   const actions = useProjectActions();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [edgeType, setEdgeType] = useState<CanvasEdgeType>("default");
 
   const handleOpenProject = (projectId: string) => {
     window.location.href = `/editor/${encodeURIComponent(projectId)}`;
@@ -48,6 +50,8 @@ export default function EditorShell({
         }
         aiOpen={isAIOpen}
         onToggleAI={toggleAI}
+        edgeType={edgeType}
+        onEdgeTypeChange={setEdgeType}
       />
       <ProjectSidebar
         isOpen={isSidebarOpen}
@@ -74,13 +78,15 @@ export default function EditorShell({
         error={actions.error}
       />
 
-      <main className="flex min-h-screen w-full flex-col bg-background lg:pl-80 lg:pr-80">
+      <main className="flex min-h-screen w-full flex-col bg-background lg:pl-80">
         <CanvasWrapper roomId={project.id}>
           <div className="flex min-h-[calc(100vh-4rem)] flex-1">
             <div className="relative flex-1">
-              <Canvas />
+              <Canvas edgeType={edgeType} />
             </div>
-            <aside className={`${isAIOpen ? "w-80" : "w-0"} border-l border-white/10 bg-[#11141a] transition-all duration-200 ${!isAIOpen ? "overflow-hidden" : "p-6 flex flex-col"}`}>
+            <aside
+              className={`${isAIOpen ? "w-100" : "w-0"} border-l border-border bg-background transition-all duration-200 ${!isAIOpen ? "overflow-hidden" : "flex flex-col p-4"}`}
+            >
               {isAIOpen && (
                 <>
                   <div className="mb-4">
