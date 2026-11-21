@@ -201,7 +201,7 @@ export function StarterTemplatesModal({
         <DialogHeader>
           <DialogTitle>Starter templates</DialogTitle>
           <DialogDescription>
-            Import a pre-built diagram to replace the current canvas.
+            Add a pre-built diagram alongside the current canvas content.
           </DialogDescription>
         </DialogHeader>
         <div className="grid max-h-[420px] grid-cols-1 gap-3 overflow-y-auto pr-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -216,7 +216,7 @@ export function StarterTemplatesModal({
               <h3 className="mt-3 text-sm font-semibold text-primary">
                 {template.name}
               </h3>
-              <p className="mt-1 min-h-10 text-xs text-secondary">
+              <p className="mt-1 min-h-10 text-xs leading-5 text-muted-foreground">
                 {template.description}
               </p>
               <Button

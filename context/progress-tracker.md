@@ -3,7 +3,7 @@ Update this file after every meaningful implementation change.
 ## Current Phase
 - Starter template library and collaborative canvas import - COMPLETE
 ## Current Goal
-- Verify template previews and canvas replacement behavior in the browser.
+- Verify starter template text contrast and appended template imports in the browser.
 ## Completed
 - Added a starter template library with microservices, CI/CD pipeline, and event-driven system diagrams using shared canvas types and node colors.
 - Added a starter templates dialog with a scrollable card grid and lightweight fixed-size SVG diagram previews.
@@ -59,11 +59,18 @@ Update this file after every meaningful implementation change.
 - Replaced the React Flow built-in controls with animated zoom in, zoom out, and fit-view actions.
 - Wired Liveblocks undo/redo availability and actions to the control bar.
 - Added keyboard shortcuts for zooming and undo/redo while ignoring editable fields.
+- Fixed starter template card descriptions to use a high-contrast muted text token in light and dark themes.
+- Updated starter template modal copy to clarify that imports are added alongside existing canvas content.
+- Fixed template imports to add template nodes and edges instead of waiting for the canvas to become empty.
+- Namespaced template node and edge IDs per import so repeated template imports remain separate canvas content.
+## FIXED - Current Issues
+1. **Starter template text clarity:** Updated the card descriptions to use `text-muted-foreground` and increased line height for clearer visibility beside the Import button.
+2. **Template import with existing canvas content:** Starter templates now append unique, namespaced node and edge IDs to the existing Liveblocks canvas state, then fit the view.
 - Added `hooks/useKeyboardShortcuts.ts` with React Flow and Liveblocks action handlers.
 ## In Progress
 - None
 ## Next Up
-- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, color toolbar, project actions, shape drag previews, and starter template replacement in the browser.
+- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, color toolbar, project actions, shape drag previews, and starter template appending in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions

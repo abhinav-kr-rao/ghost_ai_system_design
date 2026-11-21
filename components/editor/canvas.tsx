@@ -8,12 +8,10 @@ import {
   type Connection,
   ConnectionMode,
   type EdgeAddChange,
-  type EdgeRemoveChange,
   Handle,
   MiniMap,
   type NodeAddChange,
   type NodeProps,
-  type NodeRemoveChange,
   NodeResizer,
   NodeToolbar,
   Position,
@@ -233,9 +231,6 @@ function CanvasContent({ edgeType, templateImport }: CanvasContentProps) {
   const nodesRef = useRef(nodes);
   const nodeCounterRef = useRef<Record<string, number>>({});
   const handledTemplateImportRef = useRef(0);
-  const [pendingTemplate, setPendingTemplate] = useState<CanvasTemplate | null>(
-    null,
-  );
   nodesRef.current = nodes;
   const renderedEdges = useMemo(
     () => edges.map((edge) => ({ ...edge, type: edgeType })),
@@ -393,67 +388,43 @@ function CanvasContent({ edgeType, templateImport }: CanvasContentProps) {
     }
 
     handledTemplateImportRef.current = templateImport.nonce;
-    setPendingTemplate(templateImport.template);
-
-    const edgeRemovals: EdgeRemoveChange[] = edges.map((canvasEdge) => ({
-      id: canvasEdge.id,
-      type: "remove",
-    }));
-    if (edgeRemovals.length > 0) {
-      onEdgesChange(edgeRemovals);
-    }
-
-    const nodeRemovals: NodeRemoveChange[] = nodes.map((canvasNode) => ({
-      id: canvasNode.id,
-      type: "remove",
-    }));
-    if (nodeRemovals.length > 0) {
-      onNodesChange(nodeRemovals);
-    }
-  }, [templateImport, nodes, edges, onNodesChange, onEdgesChange]);
-
-  useEffect(() => {
-    if (!pendingTemplate || nodes.length > 0 || edges.length > 0) {
-      return;
-    }
-
-    const nodeAdds: NodeAddChange<CanvasNode>[] = pendingTemplate.nodes.map(
-      (templateNode) => ({
+    const templateIdPrefix = `template-${templateImport.nonce}-`;
+    const nodeAdds: NodeAddChange<CanvasNode>[] =
+      templateImport.template.nodes.map((templateNode) => ({
         type: "add",
         item: {
           ...templateNode,
+          id: `${templateIdPrefix}${templateNode.id}`,
           position: { ...templateNode.position },
           style: templateNode.style ? { ...templateNode.style } : undefined,
           data: { ...templateNode.data },
         },
-      }),
-    );
+      }));
     if (nodeAdds.length > 0) {
       onNodesChange(nodeAdds);
     }
 
-    const edgeAdds: EdgeAddChange<CanvasEdge>[] = pendingTemplate.edges.map(
-      (templateEdge) => ({
+    const edgeAdds: EdgeAddChange<CanvasEdge>[] =
+      templateImport.template.edges.map((templateEdge) => ({
         type: "add",
         item: {
           ...templateEdge,
+          id: `${templateIdPrefix}${templateEdge.id}`,
+          source: `${templateIdPrefix}${templateEdge.source}`,
+          target: `${templateIdPrefix}${templateEdge.target}`,
           type: edgeType,
           data: { ...templateEdge.data },
         },
-      }),
-    );
+      }));
     if (edgeAdds.length > 0) {
       onEdgesChange(edgeAdds);
     }
 
-    setPendingTemplate(null);
     window.requestAnimationFrame(() => {
       reactFlowInstance.fitView({ duration: 200, padding: 0.18 });
     });
   }, [
-    pendingTemplate,
-    nodes,
-    edges,
+    templateImport,
     edgeType,
     onNodesChange,
     onEdgesChange,

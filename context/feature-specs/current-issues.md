@@ -22,6 +22,14 @@
 
 ## Current Issues
 
-1. The borders of the shapes are too thin , make them a little more thick (refer to context/screenshots/image-3.png image for reference)
+1. On opening the starter template, some text, between the tile and "Import" button, is not clearly visible, check context/screenshots/image-4.png for reference
 
-2. The "Add label" placeholder is not visible in light mode, make it visible, refer to context/scrernshots/image-3.png for reference.
+2. On clicking import on a starter template, if the canvas is empty the template appears on the canvas, but on importing another template (with previous content on canvas still there), the new template is not visible.
+
+## Verification
+
+1. All text in the starter template dialog should be clearly visible in light and dark mode.
+
+2. On importing a template, that template should come on canvas along with any content that already on canvas.
+
+3. `npm run build` passes.
