@@ -12,6 +12,7 @@ import {
   type NodeAddChange,
   type NodeProps,
   NodeResizer,
+  NodeToolbar,
   Position,
   ReactFlow,
   ReactFlowProvider,
@@ -22,16 +23,19 @@ import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-flow/styles.css";
 import type {
+  CanvasColorPair,
   CanvasEdge,
   CanvasEdgeType,
   CanvasNode,
   ShapeDragPayload,
 } from "@/types/canvas";
+import { CANVAS_COLOR_PALETTE } from "@/types/canvas";
 import { ShapePanel } from "./shape-panel";
 import { ShapeVisual } from "./shape-visual";
 
 interface CanvasNodeRendererProps extends NodeProps<CanvasNode> {
   onLabelChange: (nodeId: string, label: string) => void;
+  onColorChange: (nodeId: string, colorPair: CanvasColorPair) => void;
 }
 
 function CanvasNodeRenderer({
@@ -39,6 +43,7 @@ function CanvasNodeRenderer({
   data,
   selected,
   onLabelChange,
+  onColorChange,
 }: CanvasNodeRendererProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftLabel, setDraftLabel] = useState(data.label);
@@ -84,8 +89,57 @@ function CanvasNodeRenderer({
     [],
   );
 
+  const backgroundColor = data.color || "#FFFFFF";
+  const textColor = data.textColor || "#111827";
+
+  const preventCanvasInteraction = useCallback(
+    (event: React.SyntheticEvent<HTMLElement>) => {
+      event.stopPropagation();
+    },
+    [],
+  );
+
   return (
     <div className="relative h-full w-full">
+      <NodeToolbar
+        isVisible={selected}
+        position={Position.Top}
+        offset={10}
+        align="center"
+        className="flex items-center gap-1 rounded-radius-md border border-border bg-popover p-1 shadow-md"
+        onPointerDown={preventCanvasInteraction}
+        onMouseDown={preventCanvasInteraction}
+      >
+        {CANVAS_COLOR_PALETTE.map((colorPair) => {
+          const isActive =
+            backgroundColor.toLowerCase() === colorPair.background.toLowerCase();
+
+          return (
+            <button
+              key={colorPair.name}
+              type="button"
+              aria-label={`Set node color to ${colorPair.name}`}
+              aria-pressed={isActive}
+              className="node-color-swatch h-5 w-5 shrink-0 rounded-full border-2 border-popover transition-shadow"
+              style={
+                {
+                  backgroundColor: colorPair.background,
+                  outline: isActive
+                    ? "2px solid var(--accent-primary)"
+                    : "1px solid var(--border)",
+                  outlineOffset: isActive ? "1px" : "0",
+                  "--swatch-glow": colorPair.text,
+                } as React.CSSProperties
+              }
+              onPointerDown={preventCanvasInteraction}
+              onClick={(event) => {
+                event.stopPropagation();
+                onColorChange(id, colorPair);
+              }}
+            />
+          );
+        })}
+      </NodeToolbar>
       <NodeResizer
         isVisible={selected}
         minWidth={80}
@@ -93,7 +147,11 @@ function CanvasNodeRenderer({
         handleClassName="!h-2 !w-2 !border-2 !border-background !bg-accent-primary"
         lineClassName="!border-accent-primary/60"
       />
-      <ShapeVisual shape={data.shape} className="absolute inset-0" />
+      <ShapeVisual
+        shape={data.shape}
+        backgroundColor={backgroundColor}
+        className="absolute inset-0"
+      />
       <div className="absolute inset-0 z-10 flex items-center justify-center">
         {isEditing ? (
           <textarea
@@ -105,7 +163,8 @@ function CanvasNodeRenderer({
             onPointerDown={(event) => event.stopPropagation()}
             aria-label="Edit node label"
             placeholder="Add label"
-            className="h-full w-full resize-none overflow-hidden border-0 bg-transparent px-2 py-1 text-center text-sm font-medium text-primary placeholder:text-muted-foreground outline-none"
+            className="h-full w-full resize-none overflow-hidden border-0 bg-transparent px-2 py-1 text-center text-sm font-medium placeholder:text-muted-foreground outline-none"
+            style={{ color: textColor }}
           />
         ) : (
           <button
@@ -113,9 +172,8 @@ function CanvasNodeRenderer({
             onDoubleClick={startEditing}
             onPointerDown={(event) => event.stopPropagation()}
             aria-label={data.label || "Node label"}
-            className={`h-full w-full border-0 bg-transparent px-2 text-center text-sm font-medium outline-none ${
-              data.label ? "text-primary" : "text-muted-foreground"
-            }`}
+            className="h-full w-full border-0 bg-transparent px-2 text-center text-sm font-medium outline-none"
+            style={{ color: data.label ? textColor : "var(--muted-foreground)" }}
           >
             {data.label || "Add label"}
           </button>
@@ -191,6 +249,7 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
           data: {
             label: "",
             color: "#ffffff",
+            textColor: "#111827",
             shape: payload.shape,
           },
           style: {
@@ -250,13 +309,44 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
     [onNodesChange],
   );
 
+  const handleColorChange = useCallback(
+    (nodeId: string, colorPair: CanvasColorPair) => {
+      const node = nodesRef.current.find(
+        (candidate) => candidate.id === nodeId,
+      );
+      if (!node) {
+        return;
+      }
+
+      onNodesChange([
+        {
+          id: nodeId,
+          type: "replace",
+          item: {
+            ...node,
+            data: {
+              ...node.data,
+              color: colorPair.background,
+              textColor: colorPair.text,
+            },
+          },
+        },
+      ]);
+    },
+    [onNodesChange],
+  );
+
   const nodeTypes = useMemo(
     () => ({
       canvasNode: (props: NodeProps<CanvasNode>) => (
-        <CanvasNodeRenderer {...props} onLabelChange={handleLabelChange} />
+        <CanvasNodeRenderer
+          {...props}
+          onLabelChange={handleLabelChange}
+          onColorChange={handleColorChange}
+        />
       ),
     }),
-    [handleLabelChange],
+    [handleLabelChange, handleColorChange],
   );
 
   return (

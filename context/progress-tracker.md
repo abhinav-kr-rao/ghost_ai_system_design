@@ -1,9 +1,9 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Canvas node resizing and inline label editing - COMPLETE
+- Canvas node resizing, inline label editing, and selected-node color toolbar - COMPLETE
 ## Current Goal
-- Verify the editor theme, canvas controls, node resizing, and inline label editing in the browser.
+- Verify the editor theme, canvas controls, node resizing, inline label editing, and color toolbar in the browser.
 ## Completed
 - Added the design system and UI primitive components.
 - Created components/editor/editor-navbar.tsx.
@@ -46,12 +46,14 @@ Update this file after every meaningful implementation change.
 - Added selected-node resize handles with minimum dimensions and collaborative dimension updates.
 - Added centered inline node label editing with placeholder text, synchronized typing, blur/Escape close behavior, and canvas interaction protection.
 - Thickened CSS and SVG canvas shape borders to 3px and made the “Add label” placeholder use the visible muted theme token in light and dark modes.
+- Added a predefined node color palette with paired background and text colors.
+- Added a floating NodeToolbar above selected nodes with active swatch styling and tight text-color hover glow.
+- Wired swatch selection into Liveblocks node replace mutations and updated node shapes and labels immediately.
+- Added backward-compatible text color fallbacks for existing canvas nodes.
 ## In Progress
-- Added theme toggle with persisted light/dark mode support.
-- Updated canvas and node colors for dark mode visibility.
-- Styled React Flow canvas controls so their icons and buttons remain visible in dark mode.
+- None
 ## Next Up
-- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, project actions, and shape drag previews in the browser.
+- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, color toolbar, project actions, and shape drag previews in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions
