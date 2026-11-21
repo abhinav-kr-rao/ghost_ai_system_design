@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
-import prisma from "@/lib/prisma";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { Prisma } from "@/generated/prisma/client";
+import prisma from "@/lib/prisma";
 
 const collaboratorSchema = z.object({
   email: z.string().trim().email(),
 });
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ projectId: string }> },
 ) {
   try {
@@ -43,7 +43,9 @@ export async function GET(
     }
 
     const currentUserRecord = await currentUser();
-    const signedInEmail = currentUserRecord?.primaryEmailAddress?.emailAddress?.toLowerCase() ?? null;
+    const signedInEmail =
+      currentUserRecord?.primaryEmailAddress?.emailAddress?.toLowerCase() ??
+      null;
 
     const hasAccess =
       project.ownerId === userId ||
@@ -56,16 +58,27 @@ export async function GET(
       return new NextResponse("Forbidden", { status: 403 });
     }
 
-    const collaboratorEmails = project.collaborators.map((collaborator) => collaborator.email);
+    const collaboratorEmails = project.collaborators.map(
+      (collaborator) => collaborator.email,
+    );
     const clerk = await clerkClient();
     const clerkUsers = await clerk.users.getUserList({ limit: 100 });
 
-    const usersByEmail = new Map<string, { firstName: string | null; lastName: string | null; imageUrl: string | null }>();
+    const usersByEmail = new Map<
+      string,
+      {
+        firstName: string | null;
+        lastName: string | null;
+        imageUrl: string | null;
+      }
+    >();
 
     for (const user of clerkUsers.data) {
       const matchingEmail = user.emailAddresses.find((email) => {
         const normalizedEmail = email.emailAddress.toLowerCase();
-        return collaboratorEmails.some((candidate) => candidate.toLowerCase() === normalizedEmail);
+        return collaboratorEmails.some(
+          (candidate) => candidate.toLowerCase() === normalizedEmail,
+        );
       });
 
       if (matchingEmail) {
@@ -80,7 +93,8 @@ export async function GET(
     const collaborators = collaboratorEmails.map((email) => {
       const clerkUser = usersByEmail.get(email.toLowerCase());
       const displayName = clerkUser
-        ? [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null
+        ? [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") ||
+          null
         : null;
 
       return {
@@ -123,7 +137,9 @@ export async function POST(
       return new NextResponse("Forbidden", { status: 403 });
     }
 
-    const body = collaboratorSchema.safeParse(await req.json().catch(() => ({})));
+    const body = collaboratorSchema.safeParse(
+      await req.json().catch(() => ({})),
+    );
 
     if (!body.success) {
       return new NextResponse("Invalid body", { status: 400 });
@@ -148,14 +164,16 @@ export async function POST(
           projectId,
           email: body.data.email.toLowerCase(),
         },
-      }); return NextResponse.json(collaborator);
+      });
+      return NextResponse.json(collaborator);
     } catch (createError) {
       if (
         createError instanceof Prisma.PrismaClientKnownRequestError &&
         createError.code === "P2002"
       ) {
         return new NextResponse("Collaborator already exists", { status: 409 });
-      } throw createError;
+      }
+      throw createError;
     }
   } catch (error) {
     console.error("[COLLABORATORS_POST]", error);
@@ -189,7 +207,9 @@ export async function DELETE(
       return new NextResponse("Forbidden", { status: 403 });
     }
 
-    const body = collaboratorSchema.safeParse(await req.json().catch(() => ({})));
+    const body = collaboratorSchema.safeParse(
+      await req.json().catch(() => ({})),
+    );
 
     if (!body.success) {
       return new NextResponse("Invalid body", { status: 400 });

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "@/lib/prisma";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import prisma from "@/lib/prisma";
 
 const createProjectSchema = z.object({
   name: z.string().trim().min(1).max(100).optional(),
@@ -14,7 +14,7 @@ const createProjectSchema = z.object({
     .optional(),
 });
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const { userId } = await auth();
 
@@ -61,7 +61,9 @@ export async function POST(req: NextRequest) {
     // duplicate create. This helps callers recover when the create succeeded
     // but the response failed to reach the client.
     if (body.id) {
-      const existing = await prisma.project.findUnique({ where: { id: body.id } });
+      const existing = await prisma.project.findUnique({
+        where: { id: body.id },
+      });
 
       if (existing) {
         return NextResponse.json(existing);

@@ -1,10 +1,15 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Canvas edge controls and AI sidebar - COMPLETE
+- Starter template library and collaborative canvas import - COMPLETE
 ## Current Goal
-- Verify the editor theme and canvas controls in the browser.
+- Verify starter template text contrast and appended template imports in the browser.
 ## Completed
+- Added a starter template library with microservices, CI/CD pipeline, and event-driven system diagrams using shared canvas types and node colors.
+- Added a starter templates dialog with a scrollable card grid and lightweight fixed-size SVG diagram previews.
+- Added a navbar Templates entry point for opening the starter template library.
+- Wired template import through the existing Liveblocks React Flow state to clear current edges/nodes before adding the selected template and fit the view.
+- Verified `npm run build` passes with the starter template implementation.
 - Added the design system and UI primitive components.
 - Created components/editor/editor-navbar.tsx.
 - Created components/editor/project-sidebar.tsx.
@@ -40,12 +45,32 @@ Update this file after every meaningful implementation change.
 - Added source and target connection handles on all four sides of each canvas shape.
 - Reduced the AI sidebar width and removed the permanent right-side canvas reservation.
 - Corrected Liveblocks best-practice reference examples for composer submission, Lexical toolbars, React Flow suspense, multiple editors, primitives, notification emails, unsaved changes, and Yjs package-manager overrides.
+- Added cursor-attached drag previews for every shape using the same default dimensions as dropped nodes.
+- Updated canvas shape rendering to use CSS shapes for rectangles, pills, and circles and scalable SVG shapes for diamonds, hexagons, and cylinders.
+- Standardized all shape borders to use the same border token and fixed drag-preview cleanup to avoid stale event targets.
+- Added selected-node resize handles with minimum dimensions and collaborative dimension updates.
+- Added centered inline node label editing with placeholder text, synchronized typing, blur/Escape close behavior, and canvas interaction protection.
+- Thickened CSS and SVG canvas shape borders to 3px and made the “Add label” placeholder use the visible muted theme token in light and dark modes.
+- Added a predefined node color palette with paired background and text colors.
+- Added a floating NodeToolbar above selected nodes with active swatch styling and tight text-color hover glow.
+- Wired swatch selection into Liveblocks node replace mutations and updated node shapes and labels immediately.
+- Added backward-compatible text color fallbacks for existing canvas nodes.
+- Added a floating bottom-left zoom and history control bar.
+- Replaced the React Flow built-in controls with animated zoom in, zoom out, and fit-view actions.
+- Wired Liveblocks undo/redo availability and actions to the control bar.
+- Added keyboard shortcuts for zooming and undo/redo while ignoring editable fields.
+- Fixed starter template card descriptions to use a high-contrast muted text token in light and dark themes.
+- Updated starter template modal copy to clarify that imports are added alongside existing canvas content.
+- Fixed template imports to add template nodes and edges instead of waiting for the canvas to become empty.
+- Namespaced template node and edge IDs per import so repeated template imports remain separate canvas content.
+## FIXED - Current Issues
+1. **Starter template text clarity:** Updated the card descriptions to use `text-muted-foreground` and increased line height for clearer visibility beside the Import button.
+2. **Template import with existing canvas content:** Starter templates now append unique, namespaced node and edge IDs to the existing Liveblocks canvas state, then fit the view.
+- Added `hooks/useKeyboardShortcuts.ts` with React Flow and Liveblocks action handlers.
 ## In Progress
-- Added theme toggle with persisted light/dark mode support.
-- Updated canvas and node colors for dark mode visibility.
-- Styled React Flow canvas controls so their icons and buttons remain visible in dark mode.
+- None
 ## Next Up
-- Verify the editor theme, canvas controls, edge connections, and project actions in the browser.
+- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, color toolbar, project actions, shape drag previews, and starter template appending in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions

@@ -62,8 +62,8 @@ export async function getProjectAccess(
   const hasAccess =
     project.ownerId === identity.userId ||
     (normalizedEmail !== null &&
-      project.collaborators.some((collaborator) =>
-        collaborator.email.toLowerCase() === normalizedEmail,
+      project.collaborators.some(
+        (collaborator) => collaborator.email.toLowerCase() === normalizedEmail,
       ));
 
   if (!hasAccess) {

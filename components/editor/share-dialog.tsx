@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Copy, Loader2, Trash2, UserPlus } from "lucide-react";
+import Image from "next/image";
+import { type SubmitEvent, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +26,11 @@ interface ShareDialogProps {
   isOwner: boolean;
 }
 
-export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProps) {
+export function ShareDialog({
+  projectId,
+  projectName,
+  isOwner,
+}: ShareDialogProps) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [collaborators, setCollaborators] = useState<CollaboratorRecord[]>([]);
@@ -50,7 +55,9 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
       setCollaborators(payload.collaborators ?? []);
     } catch (fetchError) {
       setError(
-        fetchError instanceof Error ? fetchError.message : "Unable to load collaborators.",
+        fetchError instanceof Error
+          ? fetchError.message
+          : "Unable to load collaborators.",
       );
     } finally {
       setIsLoading(false);
@@ -65,7 +72,7 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
     void loadCollaborators();
   }, [loadCollaborators, open]);
 
-  const handleInvite = async (event: FormEvent<HTMLFormElement>) => {
+  const handleInvite = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -147,16 +154,26 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
 
         <div className="space-y-4">
           <div className="flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 p-3">
-            <Button type="button" variant="outline" size="sm" onClick={handleCopyLink}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleCopyLink}
+            >
               {copied ? "Copied!" : "Copy link"}
               <Copy className="ml-2 h-4 w-4" />
             </Button>
-            <p className="text-sm text-muted-foreground">Share a direct link with teammates.</p>
+            <p className="text-sm text-muted-foreground">
+              Share a direct link with teammates.
+            </p>
           </div>
 
           {isOwner ? (
             <form className="space-y-2" onSubmit={handleInvite}>
-              <label className="text-sm font-medium" htmlFor="collaborator-email">
+              <label
+                className="text-sm font-medium"
+                htmlFor="collaborator-email"
+              >
                 Invite by email
               </label>
               <div className="flex gap-2">
@@ -168,13 +185,18 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
                   onChange={(event) => setEmail(event.target.value)}
                 />
                 <Button type="submit" disabled={isSubmitting || !email.trim()}>
-                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Invite"}
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Invite"
+                  )}
                 </Button>
               </div>
             </form>
           ) : (
             <p className="rounded-lg border border-dashed border-border/70 p-3 text-sm text-muted-foreground">
-              You can view collaborators but only the owner can add or remove access.
+              You can view collaborators but only the owner can add or remove
+              access.
             </p>
           )}
 
@@ -200,13 +222,16 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
                     <div className="flex items-center gap-3">
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-sm font-semibold">
                         {collaborator.avatarUrl ? (
-                          <img
+                          <Image
                             src={collaborator.avatarUrl}
                             alt={collaborator.displayName ?? collaborator.email}
                             className="h-9 w-9 rounded-full object-cover"
                           />
                         ) : (
-                          <span>{collaborator.displayName?.slice(0, 2) ?? collaborator.email.slice(0, 2)}</span>
+                          <span>
+                            {collaborator.displayName?.slice(0, 2) ??
+                              collaborator.email.slice(0, 2)}
+                          </span>
                         )}
                       </div>
                       <div>
@@ -214,7 +239,9 @@ export function ShareDialog({ projectId, projectName, isOwner }: ShareDialogProp
                           {collaborator.displayName ?? collaborator.email}
                         </p>
                         {collaborator.displayName ? (
-                          <p className="text-xs text-muted-foreground">{collaborator.email}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {collaborator.email}
+                          </p>
                         ) : null}
                       </div>
                     </div>

@@ -1,9 +1,9 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
-  getUserCursorColor,
-  getOrCreateLiveblocksRoom,
   generateLiveblocksToken,
+  getOrCreateLiveblocksRoom,
+  getUserCursorColor,
 } from "@/lib/liveblocks";
 import { getCurrentUserIdentity, getProjectAccess } from "@/lib/project-access";
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     if (!projectId) {
       return NextResponse.json(
         { error: "Project ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     if (!accessResult.project) {
       return NextResponse.json(
         { error: "forbidden", reason: "Access denied" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -45,10 +45,10 @@ export async function POST(request: NextRequest) {
     const user = await currentUser();
     const userName = user?.fullName ?? user?.firstName ?? "Anonymous";
     const userAvatar =
-      user?.imageUrl ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`;
+      user?.imageUrl ??
+      `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`;
 
     console.log("Inside post --------------------");
-    
 
     await getOrCreateLiveblocksRoom(projectId);
 
@@ -60,7 +60,6 @@ export async function POST(request: NextRequest) {
     });
 
     // console.log("------------------token is \n\n",token);
-    
 
     return NextResponse.json({
       token,
@@ -69,7 +68,7 @@ export async function POST(request: NextRequest) {
     console.error("Error in liveblocks-auth:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

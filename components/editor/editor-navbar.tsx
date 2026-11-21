@@ -1,7 +1,12 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { PanelLeftClose, PanelLeftOpen, PanelRightOpen } from "lucide-react";
+import {
+  LayoutTemplate,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightOpen,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -16,6 +21,7 @@ interface EditorNavbarProps {
   onToggleAI?: () => void;
   edgeType?: CanvasEdgeType;
   onEdgeTypeChange?: (edgeType: CanvasEdgeType) => void;
+  onOpenStarterTemplates?: () => void;
 }
 
 export function EditorNavbar({
@@ -27,6 +33,7 @@ export function EditorNavbar({
   onToggleAI,
   edgeType,
   onEdgeTypeChange,
+  onOpenStarterTemplates,
 }: EditorNavbarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 border-b bg-background z-20">
@@ -66,6 +73,16 @@ export function EditorNavbar({
                 Straight
               </Button>
             </div>
+          ) : null}
+          {onOpenStarterTemplates ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onOpenStarterTemplates}
+            >
+              <LayoutTemplate className="mr-1 h-4 w-4" />
+              Templates
+            </Button>
           ) : null}
           {shareAction ? shareAction : null}
           <Button

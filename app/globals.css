@@ -134,6 +134,12 @@
   box-shadow: 0 2px 8px oklch(0 0 0 / 12%);
 }
 
+.node-color-swatch:hover {
+  box-shadow:
+    0 0 0 1px var(--swatch-glow),
+    0 0 7px var(--swatch-glow);
+}
+
 .canvas-controls button {
   border-bottom: 1px solid var(--border);
   background: var(--background);

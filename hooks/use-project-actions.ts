@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import type { EditorProjectSummary } from "@/lib/projects";
 
 export type DialogType = "create" | "rename" | "delete" | null;
@@ -37,7 +37,8 @@ export function useProjectActions(): UseProjectActionsResult {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeDialog, setActiveDialog] = useState<DialogType>(null);
-  const [activeProject, setActiveProject] = useState<EditorProjectSummary | null>(null);
+  const [activeProject, setActiveProject] =
+    useState<EditorProjectSummary | null>(null);
   const [projectName, setProjectName] = useState("");
   const [roomSuffix, setRoomSuffix] = useState("");
   const [isLoading, setIsLoading] = useState(false);

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import prisma from "@/lib/prisma";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import prisma from "@/lib/prisma";
 
 const updateProjectSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -9,7 +9,7 @@ const updateProjectSchema = z.object({
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
+  { params }: { params: Promise<{ projectId: string }> },
 ) {
   try {
     const { userId } = await auth();
@@ -60,8 +60,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ projectId: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ projectId: string }> },
 ) {
   try {
     const { userId } = await auth();

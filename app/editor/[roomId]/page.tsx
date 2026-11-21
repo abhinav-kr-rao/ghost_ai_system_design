@@ -1,4 +1,3 @@
-
 import { redirect } from "next/navigation";
 import { AccessDenied } from "@/components/editor/access-denied";
 import EditorShell from "@/components/editor/editor-shell";
@@ -28,7 +27,11 @@ export default async function EditorRoomPage({ params }: EditorRoomPageProps) {
   return (
     <div className="min-h-screen bg-background">
       <EditorShell
-        project={{ id: access.project.id, name: access.project.name, ownerId: access.project.ownerId }}
+        project={{
+          id: access.project.id,
+          name: access.project.name,
+          ownerId: access.project.ownerId,
+        }}
         projects={projects}
         activeProjectId={access.project.id}
         isOwner={access.project.ownerId === identity.userId}

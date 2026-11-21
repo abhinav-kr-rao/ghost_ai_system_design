@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { DialogType } from "@/hooks/use-project-actions";
 import type { EditorProjectSummary } from "@/lib/projects";
@@ -109,9 +109,7 @@ export function ProjectDialogs({
         )}
 
         {isDelete && (
-          <form
-            onSubmit={handleSubmit}
-          >
+          <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>Delete Project</DialogTitle>
               <DialogDescription>
@@ -122,7 +120,11 @@ export function ProjectDialogs({
                 ? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
-            {error && <div className="px-6 pb-4"><p className="text-sm text-destructive">{error}</p></div>}
+            {error && (
+              <div className="px-6 pb-4">
+                <p className="text-sm text-destructive">{error}</p>
+              </div>
+            )}
             <DialogFooter showCloseButton>
               <Button type="submit" variant="destructive" disabled={isLoading}>
                 Delete
