@@ -45,6 +45,7 @@ Update this file after every meaningful implementation change.
 - Standardized all shape borders to use the same border token and fixed drag-preview cleanup to avoid stale event targets.
 - Added selected-node resize handles with minimum dimensions and collaborative dimension updates.
 - Added centered inline node label editing with placeholder text, synchronized typing, blur/Escape close behavior, and canvas interaction protection.
+- Thickened CSS and SVG canvas shape borders to 3px and made the “Add label” placeholder use the visible muted theme token in light and dark modes.
 ## In Progress
 - Added theme toggle with persisted light/dark mode support.
 - Updated canvas and node colors for dark mode visibility.

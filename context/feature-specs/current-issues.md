@@ -17,3 +17,11 @@
 - All shape borders use the `border-border` token and a consistent two-pixel width in both drag previews and dropped canvas nodes.
 - Drag-preview cleanup no longer reads `event.currentTarget` after the event callback.
 - `npm run build` passes.
+
+
+
+## Current Issues
+
+1. The borders of the shapes are too thin , make them a little more thick (refer to context/screenshots/image-3.png image for reference)
+
+2. The "Add label" placeholder is not visible in light mode, make it visible, refer to context/scrernshots/image-3.png for reference.

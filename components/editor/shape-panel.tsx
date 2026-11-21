@@ -63,7 +63,7 @@ export function ShapePanel() {
           : "";
 
     if (shapeClass) {
-      previewShape.className = `border-2 border-border bg-background ${shapeClass}`;
+      previewShape.className = `border-[3px] border-border bg-background ${shapeClass}`;
     } else {
       const svgNamespace = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNamespace, "svg");
@@ -79,7 +79,7 @@ export function ShapePanel() {
       );
       shapeElement.setAttribute("fill", "var(--background)");
       shapeElement.setAttribute("stroke", "currentColor");
-      shapeElement.setAttribute("stroke-width", "2");
+      shapeElement.setAttribute("stroke-width", "3");
       if (shape === "diamond") {
         shapeElement.setAttribute("points", "50,1 99,50 50,99 1,50");
       } else if (shape === "hexagon") {

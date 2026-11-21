@@ -104,7 +104,8 @@ function CanvasNodeRenderer({
             onKeyDown={handleLabelKeyDown}
             onPointerDown={(event) => event.stopPropagation()}
             aria-label="Edit node label"
-            className="h-full w-full resize-none overflow-hidden border-0 bg-transparent px-2 py-1 text-center text-sm font-medium text-primary outline-none"
+            placeholder="Add label"
+            className="h-full w-full resize-none overflow-hidden border-0 bg-transparent px-2 py-1 text-center text-sm font-medium text-primary placeholder:text-muted-foreground outline-none"
           />
         ) : (
           <button
@@ -113,7 +114,7 @@ function CanvasNodeRenderer({
             onPointerDown={(event) => event.stopPropagation()}
             aria-label={data.label || "Node label"}
             className={`h-full w-full border-0 bg-transparent px-2 text-center text-sm font-medium outline-none ${
-              data.label ? "text-primary" : "text-secondary"
+              data.label ? "text-primary" : "text-muted-foreground"
             }`}
           >
             {data.label || "Add label"}
