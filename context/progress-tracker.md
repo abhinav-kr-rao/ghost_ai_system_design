@@ -1,10 +1,15 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Canvas node resizing, inline label editing, selected-node color toolbar, and canvas zoom/history controls - COMPLETE
+- Starter template library and collaborative canvas import - COMPLETE
 ## Current Goal
-- Verify the editor theme, canvas controls, zoom/history shortcuts, node resizing, inline label editing, and color toolbar in the browser.
+- Verify template previews and canvas replacement behavior in the browser.
 ## Completed
+- Added a starter template library with microservices, CI/CD pipeline, and event-driven system diagrams using shared canvas types and node colors.
+- Added a starter templates dialog with a scrollable card grid and lightweight fixed-size SVG diagram previews.
+- Added a navbar Templates entry point for opening the starter template library.
+- Wired template import through the existing Liveblocks React Flow state to clear current edges/nodes before adding the selected template and fit the view.
+- Verified `npm run build` passes with the starter template implementation.
 - Added the design system and UI primitive components.
 - Created components/editor/editor-navbar.tsx.
 - Created components/editor/project-sidebar.tsx.
@@ -58,7 +63,7 @@ Update this file after every meaningful implementation change.
 ## In Progress
 - None
 ## Next Up
-- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, color toolbar, project actions, and shape drag previews in the browser.
+- Verify the editor theme, canvas controls, edge connections, node resizing, inline label editing, color toolbar, project actions, shape drag previews, and starter template replacement in the browser.
 ## Open Questions
 - [any unresolved decisions]
 ## Architecture Decisions

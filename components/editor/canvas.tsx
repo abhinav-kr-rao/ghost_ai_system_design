@@ -1,21 +1,19 @@
 "use client";
 
+import { useCanRedo, useCanUndo, useRedo, useUndo } from "@liveblocks/react";
 import { Cursors, useLiveblocksFlow } from "@liveblocks/react-flow";
-import {
-  useCanRedo,
-  useCanUndo,
-  useRedo,
-  useUndo,
-} from "@liveblocks/react";
 import {
   Background,
   BackgroundVariant,
   type Connection,
   ConnectionMode,
+  type EdgeAddChange,
+  type EdgeRemoveChange,
   Handle,
   MiniMap,
   type NodeAddChange,
   type NodeProps,
+  type NodeRemoveChange,
   NodeResizer,
   NodeToolbar,
   Position,
@@ -28,6 +26,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-flow/styles.css";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import type {
   CanvasColorPair,
   CanvasEdge,
@@ -36,9 +35,14 @@ import type {
   ShapeDragPayload,
 } from "@/types/canvas";
 import { CANVAS_COLOR_PALETTE } from "@/types/canvas";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ShapePanel } from "./shape-panel";
 import { ShapeVisual } from "./shape-visual";
+import type { CanvasTemplate } from "./starter-templates";
+
+export interface TemplateImportRequest {
+  nonce: number;
+  template: CanvasTemplate;
+}
 
 interface CanvasNodeRendererProps extends NodeProps<CanvasNode> {
   onLabelChange: (nodeId: string, label: string) => void;
@@ -119,7 +123,8 @@ function CanvasNodeRenderer({
       >
         {CANVAS_COLOR_PALETTE.map((colorPair) => {
           const isActive =
-            backgroundColor.toLowerCase() === colorPair.background.toLowerCase();
+            backgroundColor.toLowerCase() ===
+            colorPair.background.toLowerCase();
 
           return (
             <button
@@ -180,7 +185,9 @@ function CanvasNodeRenderer({
             onPointerDown={(event) => event.stopPropagation()}
             aria-label={data.label || "Node label"}
             className="h-full w-full border-0 bg-transparent px-2 text-center text-sm font-medium outline-none"
-            style={{ color: data.label ? textColor : "var(--muted-foreground)" }}
+            style={{
+              color: data.label ? textColor : "var(--muted-foreground)",
+            }}
           >
             {data.label || "Add label"}
           </button>
@@ -202,9 +209,10 @@ function CanvasNodeRenderer({
 // Canvas content component using React Flow hooks
 interface CanvasContentProps {
   edgeType: CanvasEdgeType;
+  templateImport?: TemplateImportRequest | null;
 }
 
-function CanvasContent({ edgeType }: CanvasContentProps) {
+function CanvasContent({ edgeType, templateImport }: CanvasContentProps) {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
     useLiveblocksFlow<CanvasNode, CanvasEdge>({
       suspense: true,
@@ -224,6 +232,10 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
   const canRedo = useCanRedo();
   const nodesRef = useRef(nodes);
   const nodeCounterRef = useRef<Record<string, number>>({});
+  const handledTemplateImportRef = useRef(0);
+  const [pendingTemplate, setPendingTemplate] = useState<CanvasTemplate | null>(
+    null,
+  );
   nodesRef.current = nodes;
   const renderedEdges = useMemo(
     () => edges.map((edge) => ({ ...edge, type: edgeType })),
@@ -372,6 +384,82 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
     }
   }, [canRedo, redo]);
 
+  useEffect(() => {
+    if (
+      !templateImport ||
+      handledTemplateImportRef.current === templateImport.nonce
+    ) {
+      return;
+    }
+
+    handledTemplateImportRef.current = templateImport.nonce;
+    setPendingTemplate(templateImport.template);
+
+    const edgeRemovals: EdgeRemoveChange[] = edges.map((canvasEdge) => ({
+      id: canvasEdge.id,
+      type: "remove",
+    }));
+    if (edgeRemovals.length > 0) {
+      onEdgesChange(edgeRemovals);
+    }
+
+    const nodeRemovals: NodeRemoveChange[] = nodes.map((canvasNode) => ({
+      id: canvasNode.id,
+      type: "remove",
+    }));
+    if (nodeRemovals.length > 0) {
+      onNodesChange(nodeRemovals);
+    }
+  }, [templateImport, nodes, edges, onNodesChange, onEdgesChange]);
+
+  useEffect(() => {
+    if (!pendingTemplate || nodes.length > 0 || edges.length > 0) {
+      return;
+    }
+
+    const nodeAdds: NodeAddChange<CanvasNode>[] = pendingTemplate.nodes.map(
+      (templateNode) => ({
+        type: "add",
+        item: {
+          ...templateNode,
+          position: { ...templateNode.position },
+          style: templateNode.style ? { ...templateNode.style } : undefined,
+          data: { ...templateNode.data },
+        },
+      }),
+    );
+    if (nodeAdds.length > 0) {
+      onNodesChange(nodeAdds);
+    }
+
+    const edgeAdds: EdgeAddChange<CanvasEdge>[] = pendingTemplate.edges.map(
+      (templateEdge) => ({
+        type: "add",
+        item: {
+          ...templateEdge,
+          type: edgeType,
+          data: { ...templateEdge.data },
+        },
+      }),
+    );
+    if (edgeAdds.length > 0) {
+      onEdgesChange(edgeAdds);
+    }
+
+    setPendingTemplate(null);
+    window.requestAnimationFrame(() => {
+      reactFlowInstance.fitView({ duration: 200, padding: 0.18 });
+    });
+  }, [
+    pendingTemplate,
+    nodes,
+    edges,
+    edgeType,
+    onNodesChange,
+    onEdgesChange,
+    reactFlowInstance,
+  ]);
+
   useKeyboardShortcuts({
     reactFlowInstance,
     onUndo: handleUndo,
@@ -473,10 +561,10 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
   );
 }
 
-export function Canvas({ edgeType }: CanvasContentProps) {
+export function Canvas({ edgeType, templateImport }: CanvasContentProps) {
   return (
     <ReactFlowProvider>
-      <CanvasContent edgeType={edgeType} />
+      <CanvasContent edgeType={edgeType} templateImport={templateImport} />
     </ReactFlowProvider>
   );
 }

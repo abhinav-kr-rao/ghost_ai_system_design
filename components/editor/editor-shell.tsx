@@ -10,6 +10,13 @@ import { EditorNavbar } from "./editor-navbar";
 import { ProjectDialogs } from "./project-dialogs";
 import { ProjectSidebar } from "./project-sidebar";
 import { ShareDialog } from "./share-dialog";
+import type { CanvasTemplate } from "./starter-templates";
+import { StarterTemplatesModal } from "./starter-templates-modal";
+
+interface TemplateImportRequest {
+  nonce: number;
+  template: CanvasTemplate;
+}
 
 interface EditorShellProps {
   project: { id: string; name: string; ownerId?: string };
@@ -28,12 +35,22 @@ export default function EditorShell({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [edgeType, setEdgeType] = useState<CanvasEdgeType>("default");
+  const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
+  const [templateImport, setTemplateImport] =
+    useState<TemplateImportRequest | null>(null);
+  const [templateImportNonce, setTemplateImportNonce] = useState(0);
 
   const handleOpenProject = (projectId: string) => {
     window.location.href = `/editor/${encodeURIComponent(projectId)}`;
   };
 
   const toggleAI = () => setIsAIOpen((v) => !v);
+
+  const handleImportTemplate = (template: CanvasTemplate) => {
+    const nextNonce = templateImportNonce + 1;
+    setTemplateImportNonce(nextNonce);
+    setTemplateImport({ nonce: nextNonce, template });
+  };
 
   return (
     <>
@@ -52,6 +69,12 @@ export default function EditorShell({
         onToggleAI={toggleAI}
         edgeType={edgeType}
         onEdgeTypeChange={setEdgeType}
+        onOpenStarterTemplates={() => setIsTemplatesOpen(true)}
+      />
+      <StarterTemplatesModal
+        open={isTemplatesOpen}
+        onOpenChange={setIsTemplatesOpen}
+        onImport={handleImportTemplate}
       />
       <ProjectSidebar
         isOpen={isSidebarOpen}
@@ -82,7 +105,7 @@ export default function EditorShell({
         <CanvasWrapper roomId={project.id}>
           <div className="flex min-h-[calc(100vh-4rem)] flex-1">
             <div className="relative flex-1">
-              <Canvas edgeType={edgeType} />
+              <Canvas edgeType={edgeType} templateImport={templateImport} />
             </div>
             <aside
               className={`${isAIOpen ? "w-100" : "w-0"} border-l border-border bg-background transition-all duration-200 ${!isAIOpen ? "overflow-hidden" : "flex flex-col p-4"}`}
