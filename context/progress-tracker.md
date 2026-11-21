@@ -1,9 +1,9 @@
 # Progress Tracker
 Update this file after every meaningful implementation change.
 ## Current Phase
-- Canvas node resizing, inline label editing, and selected-node color toolbar - COMPLETE
+- Canvas node resizing, inline label editing, selected-node color toolbar, and canvas zoom/history controls - COMPLETE
 ## Current Goal
-- Verify the editor theme, canvas controls, node resizing, inline label editing, and color toolbar in the browser.
+- Verify the editor theme, canvas controls, zoom/history shortcuts, node resizing, inline label editing, and color toolbar in the browser.
 ## Completed
 - Added the design system and UI primitive components.
 - Created components/editor/editor-navbar.tsx.
@@ -50,6 +50,11 @@ Update this file after every meaningful implementation change.
 - Added a floating NodeToolbar above selected nodes with active swatch styling and tight text-color hover glow.
 - Wired swatch selection into Liveblocks node replace mutations and updated node shapes and labels immediately.
 - Added backward-compatible text color fallbacks for existing canvas nodes.
+- Added a floating bottom-left zoom and history control bar.
+- Replaced the React Flow built-in controls with animated zoom in, zoom out, and fit-view actions.
+- Wired Liveblocks undo/redo availability and actions to the control bar.
+- Added keyboard shortcuts for zooming and undo/redo while ignoring editable fields.
+- Added `hooks/useKeyboardShortcuts.ts` with React Flow and Liveblocks action handlers.
 ## In Progress
 - None
 ## Next Up

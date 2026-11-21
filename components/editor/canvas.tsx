@@ -2,11 +2,16 @@
 
 import { Cursors, useLiveblocksFlow } from "@liveblocks/react-flow";
 import {
+  useCanRedo,
+  useCanUndo,
+  useRedo,
+  useUndo,
+} from "@liveblocks/react";
+import {
   Background,
   BackgroundVariant,
   type Connection,
   ConnectionMode,
-  Controls,
   Handle,
   MiniMap,
   type NodeAddChange,
@@ -18,6 +23,7 @@ import {
   ReactFlowProvider,
   useReactFlow,
 } from "@xyflow/react";
+import { Maximize, Minus, Plus, Redo2, Undo2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
@@ -30,6 +36,7 @@ import type {
   ShapeDragPayload,
 } from "@/types/canvas";
 import { CANVAS_COLOR_PALETTE } from "@/types/canvas";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ShapePanel } from "./shape-panel";
 import { ShapeVisual } from "./shape-visual";
 
@@ -209,7 +216,12 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
       },
     });
 
-  const { screenToFlowPosition } = useReactFlow();
+  const reactFlowInstance = useReactFlow<CanvasNode, CanvasEdge>();
+  const { screenToFlowPosition } = reactFlowInstance;
+  const undo = useUndo();
+  const redo = useRedo();
+  const canUndo = useCanUndo();
+  const canRedo = useCanRedo();
   const nodesRef = useRef(nodes);
   const nodeCounterRef = useRef<Record<string, number>>({});
   nodesRef.current = nodes;
@@ -336,6 +348,36 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
     [onNodesChange],
   );
 
+  const handleZoomOut = useCallback(() => {
+    reactFlowInstance.zoomOut({ duration: 200 });
+  }, [reactFlowInstance]);
+
+  const handleFitView = useCallback(() => {
+    reactFlowInstance.fitView({ duration: 200 });
+  }, [reactFlowInstance]);
+
+  const handleZoomIn = useCallback(() => {
+    reactFlowInstance.zoomIn({ duration: 200 });
+  }, [reactFlowInstance]);
+
+  const handleUndo = useCallback(() => {
+    if (canUndo) {
+      undo();
+    }
+  }, [canUndo, undo]);
+
+  const handleRedo = useCallback(() => {
+    if (canRedo) {
+      redo();
+    }
+  }, [canRedo, redo]);
+
+  useKeyboardShortcuts({
+    reactFlowInstance,
+    onUndo: handleUndo,
+    onRedo: handleRedo,
+  });
+
   const nodeTypes = useMemo(
     () => ({
       canvasNode: (props: NodeProps<CanvasNode>) => (
@@ -369,10 +411,63 @@ function CanvasContent({ edgeType }: CanvasContentProps) {
         connectionMode={ConnectionMode.Loose}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        <Controls className="canvas-controls" />
         <MiniMap />
         <Cursors />
       </ReactFlow>
+      <div className="fixed bottom-24 left-4 z-40 flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1.5 shadow-lg">
+        <div className="flex items-center gap-0.5">
+          <button
+            type="button"
+            onClick={handleZoomOut}
+            aria-label="Zoom out"
+            title="Zoom out (-)"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-surface-hover"
+          >
+            <Minus className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={handleFitView}
+            aria-label="Fit view"
+            title="Fit view"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-surface-hover"
+          >
+            <Maximize className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={handleZoomIn}
+            aria-label="Zoom in"
+            title="Zoom in (+)"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-surface-hover"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="mx-1 h-5 w-px bg-border" />
+        <div className="flex items-center gap-0.5">
+          <button
+            type="button"
+            onClick={handleUndo}
+            disabled={!canUndo}
+            aria-label="Undo"
+            title="Undo (Ctrl/Cmd+Z)"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+          >
+            <Undo2 className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={handleRedo}
+            disabled={!canRedo}
+            aria-label="Redo"
+            title="Redo (Ctrl/Cmd+Shift+Z)"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+          >
+            <Redo2 className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
       <ShapePanel />
     </div>
   );
